@@ -1,0 +1,19 @@
+---
+name: tflint
+on: [ pull_request ]
+
+jobs:
+  tflint:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: tflint
+        uses: reviewdog/action-tflint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          fail_on_error: true
+          tflint_version: v0.50.2
+          flags: "--recursive"
