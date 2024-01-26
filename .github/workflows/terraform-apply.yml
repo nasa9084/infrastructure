@@ -54,6 +54,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.1
+          cli_config_credentils_token: ${{ secrets.TF_API_TOKEN }}
       -
         name: Setup tfcmt
         env:
