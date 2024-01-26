@@ -59,7 +59,7 @@ jobs:
           tfcmt --version
       -
         name: Terraform Init
-        run: terraform init
+        run: terraform -chdir=${{ matrix.target }} init
       -
         name: Terraform Plan
         env:
