@@ -68,6 +68,14 @@ jobs:
         name: Terraform init
         run: terraform -chdir=${{ matrix.target }} init
       -
+        name: Download plan
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          pr: ${{ github.event.pull_request.number }}.tfplan
+          workflow: terraform-plan.yml
+          path: ${{ matrix.target }}
+          name: tfplan
+      -
         name: Terraform apply
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

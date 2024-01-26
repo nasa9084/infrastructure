@@ -65,4 +65,10 @@ jobs:
         name: Terraform Plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt -var "target:${{ matrix.target }}" plan -patch -- terraform -chdir=${{ matrix.target }} plan -out ${{ github.event.pull_request.number }}.tfplan
+        run: tfcmt -var "target:${{ matrix.target }}" plan -patch -- terraform -chdir=${{ matrix.target }} plan -out tfplan
+      -
+        name: Save plan as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.pull_request.number }}.tfplan
+          path: ${{ matrix.target }}/tfplan
