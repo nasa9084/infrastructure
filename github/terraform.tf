@@ -1,12 +1,9 @@
-locals {
-  me = "nasa9084"
-}
-
 terraform {
   required_version = "= 1.7.1"
 
   cloud {
-    organization = local.me
+    organization = "nasa9084"
+
     workspaces {
       name = "github"
     }
@@ -21,6 +18,7 @@ terraform {
 }
 
 provider "github" {
-  owner = local.me
+  owner = "nasa9084"
+
   app_auth {} # defined on Terraform Cloud
 }
