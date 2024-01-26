@@ -70,4 +70,4 @@ jobs:
         name: Terraform apply
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt apply -var "target:${{ matrix.target }}" -- terraform -chdir=${{ matrix.target }} apply -auto-approve ${{ github.event.pull_request.number }}.tfplan
+        run: tfcmt -var "target:${{ matrix.target }}" apply -- terraform -chdir=${{ matrix.target }} apply -auto-approve ${{ github.event.pull_request.number }}.tfplan

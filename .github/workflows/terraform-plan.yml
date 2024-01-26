@@ -64,4 +64,4 @@ jobs:
         name: Terraform Plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt plan -patch -var "target:${{ matrix.target }}" -- terraform -chdir=${{ matrix.target }} plan -out ${{ github.event.pull_request.number }}.tfplan
+        run: tfcmt -var "target:${{ matrix.target }}" plan -patch -- terraform -chdir=${{ matrix.target }} plan -out ${{ github.event.pull_request.number }}.tfplan
