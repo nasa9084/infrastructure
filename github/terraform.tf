@@ -3,6 +3,7 @@ terraform {
 
   cloud {
     organization = "nasa9084"
+
     workspaces {
       name = "github"
     }
@@ -18,5 +19,6 @@ terraform {
 
 provider "github" {
   owner = "nasa9084"
+
   app_auth {} # defined on Terraform Cloud
 }

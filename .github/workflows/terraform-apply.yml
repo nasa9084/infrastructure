@@ -71,10 +71,10 @@ jobs:
         name: Download plan
         uses: dawidd6/action-download-artifact@v3
         with:
-          pr: ${{ github.event.pull_request.number }}.tfplan
+          pr: ${{ github.event.pull_request.number }}
           workflow: terraform-plan.yml
+          name: ${{ github.event.pull_request.number }}.tfplan
           path: ${{ matrix.target }}
-          name: tfplan
       -
         name: Terraform apply
         env:
