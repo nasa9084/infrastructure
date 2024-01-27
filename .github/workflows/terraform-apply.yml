@@ -68,15 +68,7 @@ jobs:
         name: Terraform init
         run: terraform -chdir=${{ matrix.target }} init
       -
-        name: Download plan
-        uses: dawidd6/action-download-artifact@v3
-        with:
-          pr: ${{ github.event.pull_request.number }}
-          workflow: terraform-plan.yml
-          name: ${{ github.event.pull_request.number }}.tfplan
-          path: ${{ matrix.target }}
-      -
         name: Terraform apply
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: tfcmt -var "target:${{ matrix.target }}" apply -- terraform -chdir=${{ matrix.target }} apply -auto-approve tfplan
+        run: tfcmt -var "target:${{ matrix.target }}" apply -- terraform -chdir=${{ matrix.target }} apply -auto-approve
