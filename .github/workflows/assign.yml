@@ -1,0 +1,16 @@
+---
+name: Assign
+on: [ pull_request ]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Assign @nasa9084
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr edit ${{ github.event.pull_request.number }} --add-assignee nasa9084 --repo ${{ github.repository }}
