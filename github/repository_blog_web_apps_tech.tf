@@ -1,8 +1,3 @@
-import {
-  to = github_repository.blog_web_apps_tech
-  id = "blog.web-apps.tech"
-}
-
 resource "github_repository" "blog_web_apps_tech" {
   name                                    = "blog.web-apps.tech"
 
