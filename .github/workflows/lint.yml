@@ -13,6 +13,30 @@ jobs:
         name: actionlint
         uses: reviewdog/action-actionlint@v1
 
+  terraform_fmt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.1
+      -
+        name: terraform fmt
+        run: terraform fmt -recursive
+      -
+        name: reviewdog / terraform fmt
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: terraform fmt
+          fail_on_error: true
 
   tflint:
     runs-on: ubuntu-latest
