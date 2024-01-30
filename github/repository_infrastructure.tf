@@ -8,4 +8,6 @@ resource "github_repository" "infrastructure" {
 
   delete_branch_on_merge = true
   archive_on_destroy     = true
+
+  has_issues = true
 }
