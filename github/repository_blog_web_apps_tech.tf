@@ -13,5 +13,12 @@ resource "github_repository" "blog_web_apps_tech" {
   pages {
     build_type = "workflow"
     cname      = "blog.web-apps.tech"
+
+    # source block is required / always shown as changes
+    # even if I'm using GitHub Actions type build
+    source {
+      branch = "gh-pages"
+      path = "/"
+    }
   }
 }
