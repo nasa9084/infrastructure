@@ -7,7 +7,7 @@ resource "github_repository" "nasa9084_github_io" {
   name        = "nasa9084.github.io"
   description = "resume"
 
-  has_issues    = true
+  has_issues = true
 
   homepage_url = "https://nasa9084.github.io"
 
