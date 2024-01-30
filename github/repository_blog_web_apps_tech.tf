@@ -18,7 +18,7 @@ resource "github_repository" "blog_web_apps_tech" {
     # even if I'm using GitHub Actions type build
     source {
       branch = "gh-pages"
-      path = "/"
+      path   = "/"
     }
   }
 }
