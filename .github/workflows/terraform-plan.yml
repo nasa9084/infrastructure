@@ -31,7 +31,7 @@ jobs:
         run: echo '${{ steps.changed-terraform-directories.outputs.all_changed_files }}'
   plan:
     name: Terraform plan
-    if: ${{ needs.changed.outputs.matrix }} != []
+    if: needs.changed.outputs.matrix != '[]'
     runs-on: ubuntu-latest
     needs: [ changed ]
     permissions:
