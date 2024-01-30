@@ -1,15 +1,11 @@
-import {
-  to = github_repository.nasa9084_github_io
-  id = "nasa9084.github.io"
-}
-
 resource "github_repository" "nasa9084_github_io" {
-  name        = "nasa9084.github.io"
-  description = "resume"
+  name         = "nasa9084.github.io"
+  description  = "resume"
+  homepage_url = "https://nasa9084.github.io"
+
+  archive_on_destroy = true
 
   has_issues = true
-
-  homepage_url = "https://nasa9084.github.io"
 
   pages {
     build_type = "legacy"
