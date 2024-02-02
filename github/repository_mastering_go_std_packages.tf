@@ -9,11 +9,11 @@ import {
 }
 
 resource "github_repository" "mastering_go_std_packages" {
-  name = "mastering-go-std-packages"
+  name       = "mastering-go-std-packages"
   visibility = "private"
 }
 
 resource "github_repository" "mastering_go_std_packages_2" {
-  name = "mastering-go-std-packages-2"
+  name       = "mastering-go-std-packages-2"
   visibility = "private"
 }
