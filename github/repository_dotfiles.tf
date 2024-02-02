@@ -1,6 +1,6 @@
 import {
   to = github_repository.dotfiles
-  id = "dotfile"
+  id = "dotfiles"
 }
 
 import {
