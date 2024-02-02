@@ -3,6 +3,6 @@ import {
   id = "go-switchbot"
 }
 
-resource "github_repository" "go-switchbot" {
+resource "github_repository" "go_switchbot" {
   name = "go-switchbot"
 }
