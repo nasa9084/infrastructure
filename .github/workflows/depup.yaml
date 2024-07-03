@@ -26,6 +26,7 @@ jobs:
       -
         uses: reviewdog/action-depup/with-pr@v1
         with:
+          github_token: ${{ secrets.GH_PAT }}
           file: .github/workflows/terraform-plan.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
@@ -45,6 +46,7 @@ jobs:
       -
         uses: reviewdog/action-depup/with-pr@v1
         with:
+          github_token: ${{ secrets.GH_PAT }}
           file: .github/workflows/terraform-apply.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
@@ -64,6 +66,7 @@ jobs:
       -
         uses: reviewdog/action-depup/with-pr@v1
         with:
+          github_token: ${{ secrets.GH_PAT }}
           file: .github/workflows/lint.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
