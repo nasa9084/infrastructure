@@ -6,19 +6,51 @@ on:
   workflow_dispatch:
 
 jobs:
-  depup:
+  plan:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        files:
-          - .github/workflows/terraform-plan.yml
-          - .github/workflows/terraform-apply.yml
-          - .github/workflows/lint.yml
         apps:
           - version_name: terraform_version
             repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        uses: reviewdog/action-depup/with-pr@v1
+        with:
+          file: .github/workflows/terraform-plan.yml
+          version_name: ${{ matrix.apps.version_name }}
+          repo: ${{ matrix.apps.repo }}
+  apply:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        apps:
+          - version_name: terraform_version
+            repo: hashicorp/terraform
+          - version_name: TFCMT_VERSION
+            repo: suzuki-shunsuke/tfcmt
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        uses: reviewdog/action-depup/with-pr@v1
+        with:
+          file: .github/workflows/terraform-apply.yml
+          version_name: ${{ matrix.apps.version_name }}
+          repo: ${{ matrix.apps.repo }}
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        apps:
+          - version_name: terraform_version
+            repo: hashicorp/terraform
           - version_name: tflint_version
             repo: terraform-linters/tflint
     steps:
@@ -28,6 +60,6 @@ jobs:
       -
         uses: reviewdog/action-depup/with-pr@v1
         with:
-          file: ${{ matrix.files }}
+          file: .github/workflows/lint.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
