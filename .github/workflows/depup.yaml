@@ -28,6 +28,6 @@ jobs:
       -
         uses: reviewdog/action-depup/with-pr@v1
         with:
-          file: .github/workflows/${{ matrix.files }}
+          file: ${{ matrix.files }}
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
