@@ -70,4 +70,6 @@ jobs:
           file: .github/workflows/lint.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
-          exclude: -(alpha|beta|rc)
+          # terraform has includes alpha/beta/rc pre-releases
+          # tfcmt has pre-release suffixed by -N
+          exclude: (-(alpha|beta|rc))|(-[0-9]+$)
