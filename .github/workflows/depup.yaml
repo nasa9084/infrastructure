@@ -19,6 +19,7 @@ jobs:
             repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
+            exclude: -[0-9]+$
     steps:
       -
         name: Checkout
@@ -30,6 +31,7 @@ jobs:
           file: .github/workflows/terraform-plan.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
+          exclude: ${{ matrix.apps.exclude }}
   apply:
     runs-on: ubuntu-latest
     strategy:
@@ -39,6 +41,7 @@ jobs:
             repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
+            exclude: -[0-9]+$
     steps:
       -
         name: Checkout
@@ -50,6 +53,7 @@ jobs:
           file: .github/workflows/terraform-apply.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
+          exclude: ${{ matrix.apps.exclude }}
   lint:
     runs-on: ubuntu-latest
     strategy:
@@ -70,6 +74,4 @@ jobs:
           file: .github/workflows/lint.yml
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
-          # terraform has includes alpha/beta/rc pre-releases
-          # tfcmt has pre-release suffixed by -N
-          exclude: (-(alpha|beta|rc))|(-[0-9]+$)
+          exclude: -(alpha|beta|rc)
