@@ -59,7 +59,7 @@ jobs:
       -
         name: Setup tfcmt
         env:
-          TFCMT_VERSION: v4.8.0
+          TFCMT_VERSION: v4.14.0
         run: |
           wget "https://github.com/suzuki-shunsuke/tfcmt/releases/download/${TFCMT_VERSION}/tfcmt_linux_amd64.tar.gz" -O /tmp/tfcmt.tar.gz
           tar -xf /tmp/tfcmt.tar.gz -C /tmp
