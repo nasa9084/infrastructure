@@ -10,38 +10,22 @@ permissions:
   actions: write
 
 jobs:
-  plan:
+  depup:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        files:
+          - .github/workflows/terraform-plan.yml
+          - .github/workflows/terraform-apply.yml
+          - .github/workflows/lint.yml
         apps:
           - version_name: terraform_version
             repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        uses: reviewdog/action-depup/with-pr@v1
-        with:
-          github_token: ${{ secrets.GH_PAT }}
-          file: .github/workflows/terraform-plan.yml
-          version_name: ${{ matrix.apps.version_name }}
-          repo: ${{ matrix.apps.repo }}
-          exclude: ${{ matrix.apps.exclude }}
-  apply:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        apps:
-          - version_name: terraform_version
-            repo: hashicorp/terraform
-          - version_name: TFCMT_VERSION
-            repo: suzuki-shunsuke/tfcmt
-            exclude: -[0-9]+$
+          - version_name: tflint_version
+            repo: terraform-linters/tflint
     steps:
       -
         name: Checkout
@@ -54,24 +38,3 @@ jobs:
           version_name: ${{ matrix.apps.version_name }}
           repo: ${{ matrix.apps.repo }}
           exclude: ${{ matrix.apps.exclude }}
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        apps:
-          - version_name: terraform_version
-            repo: hashicorp/terraform
-          - version_name: tflint_version
-            repo: terraform-linters/tflint
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-      -
-        uses: reviewdog/action-depup/with-pr@v1
-        with:
-          github_token: ${{ secrets.GH_PAT }}
-          file: .github/workflows/lint.yml
-          version_name: ${{ matrix.apps.version_name }}
-          repo: ${{ matrix.apps.repo }}
-          exclude: -(alpha|beta|rc)
