@@ -16,7 +16,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/setup-terraform
+            repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
@@ -38,7 +38,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/setup-terraform
+            repo: hashicorp/terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
