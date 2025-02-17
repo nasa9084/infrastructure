@@ -21,4 +21,5 @@ provider "github" {
   owner = "nasa9084"
 
   app_auth {} # defined on Terraform Cloud
+  # DO NOT USE GITHUB_TOKEN environment variable
 }
