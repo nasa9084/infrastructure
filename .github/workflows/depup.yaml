@@ -61,7 +61,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/setup-terraform
+            repo: hashicorp/terraform
           - version_name: tflint_version
             repo: terraform-linters/tflint
     steps:
