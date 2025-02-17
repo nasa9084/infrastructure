@@ -27,7 +27,7 @@ resource "cloudflare_record" "a_web_apps_tech" {
 
   name  = "web-apps.tech"
   type  = "A"
-  value = "192.0.2.1"
+  content = "192.0.2.1"
 
   comment = "page rule"
 
@@ -39,7 +39,7 @@ resource "cloudflare_record" "a_www" {
 
   name  = "www"
   type  = "A"
-  value = "192.0.2.1"
+  content = "192.0.2.1"
 
   comment = "page rule"
 
@@ -55,7 +55,7 @@ resource "cloudflare_record" "cname_blog" {
 
   name  = "blog"
   type  = "CNAME"
-  value = "nasa9084.github.io"
+  content = "nasa9084.github.io"
   ttl   = 60
 }
 
@@ -64,7 +64,7 @@ resource "cloudflare_record" "cname_resume" {
 
   name  = "resume"
   type  = "CNAME"
-  value = "nasa9084.github.io"
+  content = "nasa9084.github.io"
   ttl   = 120
 }
 
@@ -77,7 +77,7 @@ resource "cloudflare_record" "mx_web_apps_tech_1" {
 
   name     = "web-apps.tech"
   type     = "MX"
-  value    = "route1.mx.cloudflare.net"
+  content = "route1.mx.cloudflare.net"
   ttl      = 1
   priority = 90
 }
@@ -88,7 +88,7 @@ resource "cloudflare_record" "mx_web_apps_tech_2" {
 
   name     = "web-apps.tech"
   type     = "MX"
-  value    = "route2.mx.cloudflare.net"
+  content = "route2.mx.cloudflare.net"
   ttl      = 1
   priority = 50
 }
@@ -99,7 +99,7 @@ resource "cloudflare_record" "mx_web_apps_tech_3" {
 
   name     = "web-apps.tech"
   type     = "MX"
-  value    = "route3.mx.cloudflare.net"
+  content = "route3.mx.cloudflare.net"
   ttl      = 1
   priority = 31
 }
@@ -113,7 +113,7 @@ resource "cloudflare_record" "txt_github_pages_challenge_blog" {
 
   name  = "_github-pages-challenge-nasa9084.blog"
   type  = "TXT"
-  value = "e5c680fe236c23a6f63234549cb274"
+  content = "e5c680fe236c23a6f63234549cb274"
   ttl   = 1
 }
 
@@ -122,7 +122,7 @@ resource "cloudflare_record" "txt_web_apps_tech" {
 
   name  = "web-apps.tech"
   type  = "TXT"
-  value = "\"v=spf1 include:_spf.mx.cloudflare.net ~all\""
+  content = "\"v=spf1 include:_spf.mx.cloudflare.net ~all\""
   ttl   = 1
 }
 
@@ -131,6 +131,6 @@ resource "cloudflare_record" "txt_dmarc" {
 
   name  = "_dmarc"
   type  = "TXT"
-  value = "\"v=DMARC1;  p=none; rua=mailto:4725826b8ac34b6ebdfd417ab2ce571c@dmarc-reports.cloudflare.net\""
+  content = "\"v=DMARC1;  p=none; rua=mailto:4725826b8ac34b6ebdfd417ab2ce571c@dmarc-reports.cloudflare.net\""
   ttl   = 1
 }
