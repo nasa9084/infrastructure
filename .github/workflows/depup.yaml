@@ -16,7 +16,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/terraform
+            repo: hashicorp/setup-terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
@@ -38,7 +38,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/terraform
+            repo: hashicorp/setup-terraform
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
@@ -60,7 +60,7 @@ jobs:
       matrix:
         apps:
           - version_name: terraform_version
-            repo: hashicorp/terraform
+            repo: hashicorp/setup-terraform
           - version_name: tflint_version
             repo: terraform-linters/tflint
     steps:
