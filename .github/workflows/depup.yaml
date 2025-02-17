@@ -17,6 +17,7 @@ jobs:
         apps:
           - version_name: terraform_version
             repo: hashicorp/terraform
+            exclude: -alpha[0-9]*$
           - version_name: TFCMT_VERSION
             repo: suzuki-shunsuke/tfcmt
             exclude: -[0-9]+$
