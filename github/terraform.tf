@@ -17,9 +17,24 @@ terraform {
   }
 }
 
+variable "github_app_id" {
+  type = string
+}
+
+variable "github_app_installation_id" {
+  type = string
+}
+
+variable "github_app_pem_file" {
+  type = string
+}
+
 provider "github" {
   owner = "nasa9084"
 
-  app_auth {} # defined on Terraform Cloud
-  # DO NOT USE GITHUB_TOKEN environment variable
+  app_auth {
+    id              = var.github_app_id
+    installation_id = var.github_ap_installation_id
+    pem_file        = var.github_app_pem_file
+  }
 }
