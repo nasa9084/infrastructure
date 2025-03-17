@@ -68,16 +68,6 @@ resource "cloudflare_record" "cname_resume" {
   ttl     = 120
 }
 
-resource "cloudflare_record" "cname_exporter" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
-
-  name    = "exporter"
-  type    = "CNAME"
-  content = "nasa9084.github.io"
-  ttl     = 60
-}
-
-
 // //////////////////////////////
 // MX records
 // //////////////////////////////
