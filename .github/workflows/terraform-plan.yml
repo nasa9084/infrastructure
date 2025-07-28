@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 2
       -
         name: Get changed subdirs
-        uses: tj-actions/changed-files@v45
+        uses: tj-actions/changed-files@v46
         id: changed-terraform-directories
         with:
           dir_names: true
