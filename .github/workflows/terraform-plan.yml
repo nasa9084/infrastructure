@@ -27,6 +27,7 @@ jobs:
           files: |
             **.tf
             **/.terraform.lock.hcl
+            .github/workflows/*.yml
       -
         name: List all changed terraform directories
         run: echo '${{ steps.changed-terraform-directories.outputs.all_changed_files }}'
