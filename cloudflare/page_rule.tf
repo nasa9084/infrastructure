@@ -3,8 +3,8 @@ resource "cloudflare_page_rule" "root" {
   priority = 1
 
   target = "web-apps.tech/*"
-  actions {
-    forwarding_url {
+  actions = {
+    forwarding_url = {
       status_code = 301
       url         = "https://blog.web-apps.tech/$1"
     }
@@ -16,8 +16,8 @@ resource "cloudflare_page_rule" "www" {
   priority = 2
 
   target = "www.web-apps.tech/*"
-  actions {
-    forwarding_url {
+  actions = {
+    forwarding_url = {
       status_code = 301
       url         = "https://blog.web-apps.tech/$1"
     }

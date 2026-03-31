@@ -3,10 +3,18 @@
 // //////////////////////////////
 
 resource "cloudflare_zone" "web_apps_tech" {
-  account_id = "abe0a185132e745748442fe5611bfff7"
+  account = {
+    id = "abe0a185132e745748442fe5611bfff7"
+  }
 
-  zone = "web-apps.tech"
-  plan = "free"
+  name = "web-apps.tech"
+}
+
+resource "cloudflare_zone_subscription" "web_apps_tech" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+  rate_plan = {
+    id = "free"
+  }
 }
 
 resource "cloudflare_zone_dnssec" "web_apps_tech" {
@@ -17,24 +25,36 @@ resource "cloudflare_zone_dnssec" "web_apps_tech" {
 // A records
 // //////////////////////////////
 
-resource "cloudflare_record" "a_web_apps_tech" {
+moved {
+  from = cloudflare_record.a_web_apps_tech
+  to   = cloudflare_dns_record.a_web_apps_tech
+}
+
+resource "cloudflare_dns_record" "a_web_apps_tech" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "web-apps.tech"
   type    = "A"
   content = "192.0.2.1"
+  ttl     = 1 // auto
 
   comment = "page rule"
 
   proxied = true
 }
 
-resource "cloudflare_record" "a_www" {
+moved {
+  from = cloudflare_record.a_www
+  to   = cloudflare_dns_record.a_www
+}
+
+resource "cloudflare_dns_record" "a_www" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "www"
   type    = "A"
   content = "192.0.2.1"
+  ttl     = 1 // auto
 
   comment = "page rule"
 
@@ -45,7 +65,12 @@ resource "cloudflare_record" "a_www" {
 // CNAME records
 // //////////////////////////////
 
-resource "cloudflare_record" "cname_blog" {
+moved {
+  from = cloudflare_record.cname_blog
+  to   = cloudflare_dns_record.cname_blog
+}
+
+resource "cloudflare_dns_record" "cname_blog" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "blog"
@@ -54,7 +79,12 @@ resource "cloudflare_record" "cname_blog" {
   ttl     = 60
 }
 
-resource "cloudflare_record" "cname_resume" {
+moved {
+  from = cloudflare_record.cname_resume
+  to   = cloudflare_dns_record.cname_resume
+}
+
+resource "cloudflare_dns_record" "cname_resume" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "resume"
@@ -67,7 +97,12 @@ resource "cloudflare_record" "cname_resume" {
 // MX records
 // //////////////////////////////
 
-resource "cloudflare_record" "mx_web_apps_tech_1" {
+moved {
+  from = cloudflare_record.mx_web_apps_tech_1
+  to   = cloudflare_dns_record.mx_web_apps_tech_1
+}
+
+resource "cloudflare_dns_record" "mx_web_apps_tech_1" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
@@ -77,8 +112,12 @@ resource "cloudflare_record" "mx_web_apps_tech_1" {
   priority = 90
 }
 
+moved {
+  from = cloudflare_record.mx_web_apps_tech_2
+  to   = cloudflare_dns_record.mx_web_apps_tech_2
+}
 
-resource "cloudflare_record" "mx_web_apps_tech_2" {
+resource "cloudflare_dns_record" "mx_web_apps_tech_2" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
@@ -88,8 +127,12 @@ resource "cloudflare_record" "mx_web_apps_tech_2" {
   priority = 50
 }
 
+moved {
+  from = cloudflare_record.mx_web_apps_tech_3
+  to   = cloudflare_dns_record.mx_web_apps_tech_3
+}
 
-resource "cloudflare_record" "mx_web_apps_tech_3" {
+resource "cloudflare_dns_record" "mx_web_apps_tech_3" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
@@ -103,7 +146,12 @@ resource "cloudflare_record" "mx_web_apps_tech_3" {
 // TXT records
 // //////////////////////////////
 
-resource "cloudflare_record" "txt_github_pages_challenge_blog" {
+moved {
+  from = cloudflare_record.txt_github_pages_challenge_blog
+  to   = cloudflare_dns_record.txt_github_pages_challenge_blog
+}
+
+resource "cloudflare_dns_record" "txt_github_pages_challenge_blog" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "_github-pages-challenge-nasa9084.blog"
@@ -112,7 +160,12 @@ resource "cloudflare_record" "txt_github_pages_challenge_blog" {
   ttl     = 1
 }
 
-resource "cloudflare_record" "txt_web_apps_tech" {
+moved {
+  from = cloudflare_record.txt_web_apps_tech
+  to   = cloudflare_dns_record.txt_web_apps_tech
+}
+
+resource "cloudflare_dns_record" "txt_web_apps_tech" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "web-apps.tech"
@@ -121,7 +174,12 @@ resource "cloudflare_record" "txt_web_apps_tech" {
   ttl     = 1
 }
 
-resource "cloudflare_record" "txt_dmarc" {
+moved {
+  from = cloudflare_record.txt_dmarc
+  to   = cloudflare_dns_record.txt_dmarc
+}
+
+resource "cloudflare_dns_record" "txt_dmarc" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "_dmarc"
