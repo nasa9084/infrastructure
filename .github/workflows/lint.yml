@@ -50,5 +50,5 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
-          tflint_version: v0.56.0
+          tflint_version: v0.58.0
           flags: "--recursive"
