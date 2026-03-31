@@ -9,13 +9,8 @@ resource "cloudflare_zone" "web_apps_tech" {
   plan = "free"
 }
 
-data "cloudflare_zone" "web_apps_tech" {
-  account_id = "abe0a185132e745748442fe5611bfff7"
-  name       = "web-apps.tech"
-}
-
 resource "cloudflare_zone_dnssec" "web_apps_tech" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 }
 
 // //////////////////////////////
@@ -23,7 +18,7 @@ resource "cloudflare_zone_dnssec" "web_apps_tech" {
 // //////////////////////////////
 
 resource "cloudflare_record" "a_web_apps_tech" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "web-apps.tech"
   type    = "A"
@@ -35,7 +30,7 @@ resource "cloudflare_record" "a_web_apps_tech" {
 }
 
 resource "cloudflare_record" "a_www" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "www"
   type    = "A"
@@ -51,7 +46,7 @@ resource "cloudflare_record" "a_www" {
 // //////////////////////////////
 
 resource "cloudflare_record" "cname_blog" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "blog"
   type    = "CNAME"
@@ -60,7 +55,7 @@ resource "cloudflare_record" "cname_blog" {
 }
 
 resource "cloudflare_record" "cname_resume" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "resume"
   type    = "CNAME"
@@ -73,7 +68,7 @@ resource "cloudflare_record" "cname_resume" {
 // //////////////////////////////
 
 resource "cloudflare_record" "mx_web_apps_tech_1" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
   type     = "MX"
@@ -84,7 +79,7 @@ resource "cloudflare_record" "mx_web_apps_tech_1" {
 
 
 resource "cloudflare_record" "mx_web_apps_tech_2" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
   type     = "MX"
@@ -95,7 +90,7 @@ resource "cloudflare_record" "mx_web_apps_tech_2" {
 
 
 resource "cloudflare_record" "mx_web_apps_tech_3" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name     = "web-apps.tech"
   type     = "MX"
@@ -109,7 +104,7 @@ resource "cloudflare_record" "mx_web_apps_tech_3" {
 // //////////////////////////////
 
 resource "cloudflare_record" "txt_github_pages_challenge_blog" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "_github-pages-challenge-nasa9084.blog"
   type    = "TXT"
@@ -118,7 +113,7 @@ resource "cloudflare_record" "txt_github_pages_challenge_blog" {
 }
 
 resource "cloudflare_record" "txt_web_apps_tech" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "web-apps.tech"
   type    = "TXT"
@@ -127,7 +122,7 @@ resource "cloudflare_record" "txt_web_apps_tech" {
 }
 
 resource "cloudflare_record" "txt_dmarc" {
-  zone_id = data.cloudflare_zone.web_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "_dmarc"
   type    = "TXT"

@@ -1,5 +1,5 @@
 resource "cloudflare_page_rule" "root" {
-  zone_id  = data.cloudflare_zone.web_apps_tech.id
+  zone_id  = cloudflare_zone.web_apps_tech.id
   priority = 1
 
   target = "web-apps.tech/*"
@@ -12,7 +12,7 @@ resource "cloudflare_page_rule" "root" {
 }
 
 resource "cloudflare_page_rule" "www" {
-  zone_id  = data.cloudflare_zone.web_apps_tech.id
+  zone_id  = cloudflare_zone.web_apps_tech.id
   priority = 2
 
   target = "www.web-apps.tech/*"
