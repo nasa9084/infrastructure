@@ -23,4 +23,6 @@ resource "github_repository_pages" "nasa9084_github_io" {
     branch = "master"
     path   = "/"
   }
+
+  https_enforced = true
 }

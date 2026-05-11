@@ -21,4 +21,6 @@ resource "github_repository_pages" "exporter_web_apps_tech" {
 
   build_type = "workflow"
   cname      = "exporter.web-apps.tech"
+
+  https_enforced = false
 }

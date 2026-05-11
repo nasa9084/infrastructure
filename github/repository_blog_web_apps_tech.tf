@@ -21,4 +21,6 @@ resource "github_repository_pages" "blog_web_apps_tech" {
 
   build_type = "workflow"
   cname      = "blog.web-apps.tech"
+
+  https_enforced = true
 }
