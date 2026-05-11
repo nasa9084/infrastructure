@@ -12,7 +12,7 @@ resource "github_repository" "blog_web_apps_tech" {
 }
 
 resource "github_repository_pages" "blog_web_apps_tech" {
-  repository = github_repository.blog_web_apps_tech
+  repository = github_repository.blog_web_apps_tech.name
 
   build_type = "workflow"
   cname      = "blog.web-apps.tech"

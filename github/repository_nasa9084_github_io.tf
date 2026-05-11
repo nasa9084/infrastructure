@@ -9,7 +9,7 @@ resource "github_repository" "nasa9084_github_io" {
 }
 
 resource "github_repository_pages" "nasa9084_github_io" {
-  repository = github_repository.nasa9084_github_io
+  repository = github_repository.nasa9084_github_io.name
 
   build_type = "legacy"
   cname      = "resume.web-apps.tech"

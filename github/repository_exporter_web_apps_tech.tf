@@ -12,7 +12,7 @@ resource "github_repository" "exporter_web_apps_tech" {
 }
 
 resource "github_repository_pages" "exporter_web_apps_tech" {
-  repository = github_repository.exporter_web_apps_tech
+  repository = github_repository.exporter_web_apps_tech.name
 
   build_type = "workflow"
   cname      = "exporter.web-apps.tech"
