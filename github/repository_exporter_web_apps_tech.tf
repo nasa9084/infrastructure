@@ -9,16 +9,11 @@ resource "github_repository" "exporter_web_apps_tech" {
   delete_branch_on_merge = true
 
   has_issues = true
+}
 
-  pages {
-    build_type = "workflow"
-    cname      = "exporter.web-apps.tech"
+resource "github_repository_pages" "exporter_web_apps_tech" {
+  repository = github_repository.exporter_web_apps_tech
 
-    # source block is required / always shown as changes
-    # even if I'm using GitHub Actions type build
-    source {
-      branch = "gh-pages"
-      path   = "/"
-    }
-  }
+  build_type = "workflow"
+  cname      = "exporter.web-apps.tech"
 }
