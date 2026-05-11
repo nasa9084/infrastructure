@@ -11,6 +11,11 @@ resource "github_repository" "blog_web_apps_tech" {
   has_issues = true
 }
 
+import {
+  id = "blog.web-apps.tech"
+  to = github_repository_pages.blog_web_apps_tech
+}
+
 resource "github_repository_pages" "blog_web_apps_tech" {
   repository = github_repository.blog_web_apps_tech.name
 

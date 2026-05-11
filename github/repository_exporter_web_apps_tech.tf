@@ -11,6 +11,11 @@ resource "github_repository" "exporter_web_apps_tech" {
   has_issues = true
 }
 
+import {
+  id = "exporter.web-apps.tech"
+  to = github_repository_pages.exporter_web_apps_tech
+}
+
 resource "github_repository_pages" "exporter_web_apps_tech" {
   repository = github_repository.exporter_web_apps_tech.name
 

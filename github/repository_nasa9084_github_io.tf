@@ -8,6 +8,11 @@ resource "github_repository" "nasa9084_github_io" {
   has_issues = true
 }
 
+import {
+  id = "nasa9084.github.io"
+  to = github_repository_pages.nasa9084_github_io
+}
+
 resource "github_repository_pages" "nasa9084_github_io" {
   repository = github_repository.nasa9084_github_io.name
 
