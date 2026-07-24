@@ -6,14 +6,23 @@ resource "github_repository" "nasa9084_github_io" {
   archive_on_destroy = true
 
   has_issues = true
+}
 
-  pages {
-    build_type = "legacy"
-    cname      = "resume.web-apps.tech"
+import {
+  id = "nasa9084.github.io"
+  to = github_repository_pages.nasa9084_github_io
+}
 
-    source {
-      branch = "master"
-      path   = "/"
-    }
+resource "github_repository_pages" "nasa9084_github_io" {
+  repository = github_repository.nasa9084_github_io.name
+
+  build_type = "legacy"
+  cname      = "resume.web-apps.tech"
+
+  source {
+    branch = "master"
+    path   = "/"
   }
+
+  https_enforced = true
 }
