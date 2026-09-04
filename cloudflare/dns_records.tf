@@ -180,3 +180,12 @@ moved {
   from = cloudflare_record.txt_dmarc
   to   = cloudflare_dns_record.txt_dmarc
 }
+
+resource "cloudflare_dns_record" "_gh_web_apps_tech_o" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "_gh-web-apps-tech-o"
+  type    = "TXT"
+  content = "078b0c07f9"
+  ttl     = 1
+}
