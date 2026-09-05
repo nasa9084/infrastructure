@@ -97,10 +97,10 @@ import {
 resource "cloudflare_dns_record" "hass" {
   zone_id = cloudflare_zone.webp_apps_tech.id
 
-  name = "hass"
-  type = "CNAME"
+  name    = "hass"
+  type    = "CNAME"
   content = cloudflare_zero_trust_tunnel_cloudflared.homeassistant.id
-  ttl = 1
+  ttl     = 1
 }
 
 import {
@@ -111,10 +111,10 @@ import {
 resource "cloudflare_dns_record" "proxmox" {
   zone_id = cloudflare_zone.webp_apps_tech.id
 
-  name = "proxmox"
-  type = "CNAME"
+  name    = "proxmox"
+  type    = "CNAME"
   content = cloudflare_zero_trust_tunnel_cloudflared.proxmox.id
-  ttl = 1
+  ttl     = 1
 }
 
 
