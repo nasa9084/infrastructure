@@ -32,11 +32,6 @@ resource "cloudflare_dns_record" "a_web_apps_tech" {
   ttl     = 1
 }
 
-moved {
-  from = cloudflare_record.a_web_apps_tech
-  to   = cloudflare_dns_record.a_web_apps_tech
-}
-
 resource "cloudflare_dns_record" "a_www" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -48,11 +43,6 @@ resource "cloudflare_dns_record" "a_www" {
 
   proxied = true
   ttl     = 1
-}
-
-moved {
-  from = cloudflare_record.a_www
-  to   = cloudflare_dns_record.a_www
 }
 
 // //////////////////////////////
@@ -68,11 +58,6 @@ resource "cloudflare_dns_record" "cname_blog" {
   ttl     = 60
 }
 
-moved {
-  from = cloudflare_record.cname_blog
-  to   = cloudflare_dns_record.cname_blog
-}
-
 resource "cloudflare_dns_record" "cname_resume" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -82,19 +67,9 @@ resource "cloudflare_dns_record" "cname_resume" {
   ttl     = 120
 }
 
-moved {
-  from = cloudflare_record.cname_resume
-  to   = cloudflare_dns_record.cname_resume
-}
-
 // //////////////////////////////
 // Tunnel records
 // //////////////////////////////
-
-import {
-  id = "08db5577586403ed45dd2981644cb873/716e46b0425d26b3eadaecb3dee763d6"
-  to = cloudflare_dns_record.hass
-}
 
 resource "cloudflare_dns_record" "hass" {
   zone_id = cloudflare_zone.web_apps_tech.id
@@ -106,10 +81,6 @@ resource "cloudflare_dns_record" "hass" {
   proxied = true
 }
 
-import {
-  id = "08db5577586403ed45dd2981644cb873/8567cfdf1c29bf9c7ce44618bc751aa8"
-  to = cloudflare_dns_record.proxmox
-}
 
 resource "cloudflare_dns_record" "proxmox" {
   zone_id = cloudflare_zone.web_apps_tech.id
@@ -136,11 +107,6 @@ resource "cloudflare_dns_record" "mx_web_apps_tech_1" {
   priority = 90
 }
 
-moved {
-  from = cloudflare_record.mx_web_apps_tech_1
-  to   = cloudflare_dns_record.mx_web_apps_tech_1
-}
-
 resource "cloudflare_dns_record" "mx_web_apps_tech_2" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -151,11 +117,6 @@ resource "cloudflare_dns_record" "mx_web_apps_tech_2" {
   priority = 50
 }
 
-moved {
-  from = cloudflare_record.mx_web_apps_tech_2
-  to   = cloudflare_dns_record.mx_web_apps_tech_2
-}
-
 resource "cloudflare_dns_record" "mx_web_apps_tech_3" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -164,11 +125,6 @@ resource "cloudflare_dns_record" "mx_web_apps_tech_3" {
   content  = "route3.mx.cloudflare.net"
   ttl      = 1
   priority = 31
-}
-
-moved {
-  from = cloudflare_record.mx_web_apps_tech_3
-  to   = cloudflare_dns_record.mx_web_apps_tech_3
 }
 
 // //////////////////////////////
@@ -184,11 +140,6 @@ resource "cloudflare_dns_record" "txt_github_pages_challenge_blog" {
   ttl     = 1
 }
 
-moved {
-  from = cloudflare_record.txt_github_pages_challenge_blog
-  to   = cloudflare_dns_record.txt_github_pages_challenge_blog
-}
-
 resource "cloudflare_dns_record" "txt_web_apps_tech" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -198,11 +149,6 @@ resource "cloudflare_dns_record" "txt_web_apps_tech" {
   ttl     = 1
 }
 
-moved {
-  from = cloudflare_record.txt_web_apps_tech
-  to   = cloudflare_dns_record.txt_web_apps_tech
-}
-
 resource "cloudflare_dns_record" "txt_dmarc" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
@@ -210,11 +156,6 @@ resource "cloudflare_dns_record" "txt_dmarc" {
   type    = "TXT"
   content = "\"v=DMARC1;  p=none; rua=mailto:4725826b8ac34b6ebdfd417ab2ce571c@dmarc-reports.cloudflare.net\""
   ttl     = 1
-}
-
-moved {
-  from = cloudflare_record.txt_dmarc
-  to   = cloudflare_dns_record.txt_dmarc
 }
 
 resource "cloudflare_dns_record" "_gh_web_apps_tech_o" {
