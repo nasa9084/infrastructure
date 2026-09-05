@@ -3,7 +3,6 @@
 // //////////////////////////////
 
 resource "cloudflare_zone" "web_apps_tech" {
-
   name = "web-apps.tech"
   account = {
     id = "abe0a185132e745748442fe5611bfff7"
@@ -12,6 +11,8 @@ resource "cloudflare_zone" "web_apps_tech" {
 
 resource "cloudflare_zone_dnssec" "web_apps_tech" {
   zone_id = cloudflare_zone.web_apps_tech.id
+
+  status = "active"
 }
 
 // //////////////////////////////
@@ -85,6 +86,41 @@ moved {
   from = cloudflare_record.cname_resume
   to   = cloudflare_dns_record.cname_resume
 }
+
+// //////////////////////////////
+// Tunnel records
+// //////////////////////////////
+
+import {
+  id = "08db5577586403ed45dd2981644cb873/716e46b0425d26b3eadaecb3dee763d6"
+  to = cloudflare_dns_record.hass
+}
+
+resource "cloudflare_dns_record" "hass" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "hass"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.homeassistant.id}.cfargotunnel.com"
+  ttl     = 1
+  proxied = true
+}
+
+import {
+  id = "08db5577586403ed45dd2981644cb873/8567cfdf1c29bf9c7ce44618bc751aa8"
+  to = cloudflare_dns_record.proxmox
+}
+
+resource "cloudflare_dns_record" "proxmox" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "proxmox"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.proxmox.id}.cfargotunnel.com"
+  ttl     = 1
+  proxied = true
+}
+
 
 // //////////////////////////////
 // MX records
