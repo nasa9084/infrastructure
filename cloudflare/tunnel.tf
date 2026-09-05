@@ -27,7 +27,6 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "proxmox" {
       {
         service  = "https://192.168.1.2:8006"
         hostname = "proxmox.web-apps.tech"
-        path     = "*"
 
         origin_request = {
           no_tls_verify = true
