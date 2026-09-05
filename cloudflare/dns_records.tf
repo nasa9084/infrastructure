@@ -105,15 +105,6 @@ resource "cloudflare_dns_record" "txt_github_pages_challenge_blog" {
   ttl     = 1
 }
 
-resource "cloudflare_dns_record" "txt_web_apps_tech" {
-  zone_id = cloudflare_zone.web_apps_tech.id
-
-  name    = "web-apps.tech"
-  type    = "TXT"
-  content = "\"v=spf1 include:_spf.mx.cloudflare.net ~all\""
-  ttl     = 1
-}
-
 resource "cloudflare_dns_record" "txt_dmarc" {
   zone_id = cloudflare_zone.web_apps_tech.id
 
