@@ -95,7 +95,7 @@ import {
 }
 
 resource "cloudflare_dns_record" "hass" {
-  zone_id = cloudflare_zone.webp_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "hass"
   type    = "CNAME"
@@ -109,7 +109,7 @@ import {
 }
 
 resource "cloudflare_dns_record" "proxmox" {
-  zone_id = cloudflare_zone.webp_apps_tech.id
+  zone_id = cloudflare_zone.web_apps_tech.id
 
   name    = "proxmox"
   type    = "CNAME"
