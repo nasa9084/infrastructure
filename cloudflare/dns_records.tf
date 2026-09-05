@@ -99,7 +99,7 @@ resource "cloudflare_dns_record" "hass" {
 
   name    = "hass"
   type    = "CNAME"
-  content = cloudflare_zero_trust_tunnel_cloudflared.homeassistant.id
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.homeassistant.id}.cfargotunnel.com"
   ttl     = 1
 }
 
@@ -113,7 +113,7 @@ resource "cloudflare_dns_record" "proxmox" {
 
   name    = "proxmox"
   type    = "CNAME"
-  content = cloudflare_zero_trust_tunnel_cloudflared.proxmox.id
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.proxmox.id}.cfargotunnel.com"
   ttl     = 1
 }
 
