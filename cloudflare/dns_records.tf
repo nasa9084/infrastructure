@@ -92,41 +92,6 @@ resource "cloudflare_dns_record" "proxmox" {
   proxied = true
 }
 
-
-// //////////////////////////////
-// MX records
-// //////////////////////////////
-
-resource "cloudflare_dns_record" "mx_web_apps_tech_1" {
-  zone_id = cloudflare_zone.web_apps_tech.id
-
-  name     = "web-apps.tech"
-  type     = "MX"
-  content  = "route1.mx.cloudflare.net"
-  ttl      = 1
-  priority = 90
-}
-
-resource "cloudflare_dns_record" "mx_web_apps_tech_2" {
-  zone_id = cloudflare_zone.web_apps_tech.id
-
-  name     = "web-apps.tech"
-  type     = "MX"
-  content  = "route2.mx.cloudflare.net"
-  ttl      = 1
-  priority = 50
-}
-
-resource "cloudflare_dns_record" "mx_web_apps_tech_3" {
-  zone_id = cloudflare_zone.web_apps_tech.id
-
-  name     = "web-apps.tech"
-  type     = "MX"
-  content  = "route3.mx.cloudflare.net"
-  ttl      = 1
-  priority = 31
-}
-
 // //////////////////////////////
 // TXT records
 // //////////////////////////////
@@ -137,15 +102,6 @@ resource "cloudflare_dns_record" "txt_github_pages_challenge_blog" {
   name    = "_github-pages-challenge-nasa9084.blog"
   type    = "TXT"
   content = "e5c680fe236c23a6f63234549cb274"
-  ttl     = 1
-}
-
-resource "cloudflare_dns_record" "txt_web_apps_tech" {
-  zone_id = cloudflare_zone.web_apps_tech.id
-
-  name    = "web-apps.tech"
-  type    = "TXT"
-  content = "\"v=spf1 include:_spf.mx.cloudflare.net ~all\""
   ttl     = 1
 }
 
