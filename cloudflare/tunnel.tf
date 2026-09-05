@@ -19,5 +19,5 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "proxmox" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
   name       = "proxmox"
-  config_src = "local"
+  config_src = "cloudflare"
 }
