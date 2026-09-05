@@ -11,6 +11,8 @@ resource "cloudflare_zone" "web_apps_tech" {
 
 resource "cloudflare_zone_dnssec" "web_apps_tech" {
   zone_id = cloudflare_zone.web_apps_tech.id
+
+  status = "active"
 }
 
 // //////////////////////////////
