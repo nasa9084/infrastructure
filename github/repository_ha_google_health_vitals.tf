@@ -4,7 +4,9 @@ import {
 }
 
 resource "github_repository" "ha_google_health_vitals" {
-  name = "ha-google-health-vitals"
+  name        = "ha-google-health-vitals"
+  description = "Home Assistant custom integration for vitals (SpO2, HRV, etc.) from the Google Health API"
+  topics      = ["hacs", "home-assistant", "home-assistant-integration", "google-health", "fitbit"]
 
   # only allow squash merge
   allow_merge_commit = false
