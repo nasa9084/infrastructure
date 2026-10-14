@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v7
       -
         name: tflint
-        uses: reviewdog/action-tflint@v1
+        uses: reviewdog/action-tflint@v1.27.0
         id: tflint
         with:
           github_token: ${{ secrets.github_token }}
