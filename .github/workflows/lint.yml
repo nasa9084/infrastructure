@@ -52,6 +52,8 @@ jobs:
           github_token: ${{ secrets.github_token }}
           fail_level: "any"
           flags: "--recursive"
+        env:
+          TFLINT_LOG: debug
       -
         run:
           echo ${{ steps.tflint.outputs.tflint-return-code }}
