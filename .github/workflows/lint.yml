@@ -47,13 +47,7 @@ jobs:
       -
         name: tflint
         uses: reviewdog/action-tflint@v1.27.0
-        id: tflint
         with:
           github_token: ${{ secrets.github_token }}
           fail_level: "any"
           flags: "--recursive"
-        env:
-          TFLINT_LOG: debug
-      -
-        run:
-          echo ${{ steps.tflint.outputs.tflint-return-code }}
