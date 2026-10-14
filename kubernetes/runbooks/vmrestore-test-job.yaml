@@ -1,0 +1,42 @@
+# Throwaway restore drill: restores the R2 backup into a scratch directory.
+# Never touches the production storage (/var/lib/victoria-metrics).
+# Part of the restore drill in ../README.org. Never put this under stacks/.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vmrestore-test
+  namespace: victoria-metrics
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: Never
+      containers:
+        - name: vmrestore
+          image: victoriametrics/vmrestore:v1.153.0
+          args:
+            - -src=s3://prometheus-remote-store/vm
+            - -storageDataPath=/restore
+            - -customS3Endpoint=https://abe0a185132e745748442fe5611bfff7.r2.cloudflarestorage.com
+          env:
+            - name: AWS_REGION
+              value: auto
+          envFrom:
+            - secretRef:
+                name: r2-credentials
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: restore
+              mountPath: /restore
+      volumes:
+        - name: restore
+          hostPath:
+            path: /var/lib/vm-restore-test
+            type: DirectoryOrCreate

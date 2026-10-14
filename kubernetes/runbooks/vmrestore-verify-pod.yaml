@@ -1,0 +1,32 @@
+# Throwaway VictoriaMetrics that only reads the restored data (no scraping).
+# Part of the restore drill in ../README.org. Never put this under stacks/.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vm-restore-verify
+  namespace: victoria-metrics
+  labels:
+    app: vm-restore-verify
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - name: victoria-metrics
+      image: victoriametrics/victoria-metrics:v1.153.0
+      args:
+        - -storageDataPath=/restore
+        - -retentionPeriod=5y
+        - -httpListenAddr=:8428
+      resources:
+        requests:
+          cpu: 20m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+      volumeMounts:
+        - name: restore
+          mountPath: /restore
+  volumes:
+    - name: restore
+      hostPath:
+        path: /var/lib/vm-restore-test
+        type: Directory
