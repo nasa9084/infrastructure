@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync Kubernetes manifests from GitHub to the k0s Manifest Deployer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/k0s-manifest-sync.sh

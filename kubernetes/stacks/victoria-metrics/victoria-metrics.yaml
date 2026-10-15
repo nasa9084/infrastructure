@@ -1,0 +1,146 @@
+# VictoriaMetrics (single node) + daily vmbackup to Cloudflare R2.
+# The namespace and the Secrets (ha-token, r2-credentials) are created by hand; see ../../README.org.
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scrape-config
+  namespace: victoria-metrics
+data:
+  scrape.yml: |
+    global:
+      scrape_interval: 60s
+    scrape_configs:
+      - job_name: homeassistant
+        metrics_path: /api/prometheus
+        scheme: http
+        authorization:
+          credentials_file: /secrets/ha/token
+        static_configs:
+          - targets: ["192.168.1.105:8123"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: victoria-metrics
+  namespace: victoria-metrics
+spec:
+  selector:
+    app: victoria-metrics
+  ports:
+    - name: http
+      port: 8428
+      targetPort: 8428
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: victoria-metrics
+  namespace: victoria-metrics
+  labels:
+    app: victoria-metrics
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: victoria-metrics
+  template:
+    metadata:
+      labels:
+        app: victoria-metrics
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: victoria-metrics
+          image: victoriametrics/victoria-metrics:v1.153.0
+          args:
+            - -storageDataPath=/storage
+            - -retentionPeriod=5y
+            - -httpListenAddr=:8428
+            - -promscrape.config=/etc/vm/scrape.yml
+            - -memory.allowedPercent=40
+          ports:
+            - name: http
+              containerPort: 8428
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8428
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 384Mi
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+            - name: scrape-config
+              mountPath: /etc/vm
+              readOnly: true
+            - name: ha-token
+              mountPath: /secrets/ha
+              readOnly: true
+      volumes:
+        - name: storage
+          hostPath:
+            path: /var/lib/victoria-metrics
+            type: DirectoryOrCreate
+        - name: scrape-config
+          configMap:
+            name: scrape-config
+        - name: ha-token
+          secret:
+            secretName: ha-token
+---
+# Daily snapshot -> incremental backup to R2.
+# Backups are incremental as long as the same dst is reused.
+# Reads the same hostPath as VictoriaMetrics, so this assumes a single node.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vmbackup
+  namespace: victoria-metrics
+spec:
+  schedule: "30 4 * * *"
+  timeZone: Asia/Tokyo
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          containers:
+            - name: vmbackup
+              image: victoriametrics/vmbackup:v1.153.0
+              args:
+                - -storageDataPath=/storage
+                - -snapshot.createURL=http://victoria-metrics:8428/snapshot/create
+                - -dst=s3://prometheus-remote-store/vm
+                - -customS3Endpoint=https://abe0a185132e745748442fe5611bfff7.r2.cloudflarestorage.com
+              env:
+                - name: AWS_REGION
+                  value: auto
+              envFrom:
+                - secretRef:
+                    name: r2-credentials
+              resources:
+                requests:
+                  cpu: 20m
+                  memory: 64Mi
+                limits:
+                  memory: 256Mi
+              volumeMounts:
+                - name: storage
+                  mountPath: /storage
+          volumes:
+            - name: storage
+              hostPath:
+                path: /var/lib/victoria-metrics
+                type: Directory

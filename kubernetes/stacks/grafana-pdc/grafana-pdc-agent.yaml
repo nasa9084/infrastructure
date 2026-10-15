@@ -1,0 +1,71 @@
+# Grafana Cloud PDC agent (lets Grafana Cloud reach VictoriaMetrics over a private connection).
+# Small resource requests on purpose: the upstream example asks for 1 CPU / 1Gi, which does not fit this node.
+# The namespace and the Secret (grafana-pdc-agent) are created by hand; see ../../README.org.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-pdc-agent
+  namespace: grafana-pdc
+  labels:
+    name: grafana-pdc-agent
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      name: grafana-pdc-agent
+  template:
+    metadata:
+      labels:
+        name: grafana-pdc-agent
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 30000
+        runAsGroup: 30000
+        fsGroup: 30000
+      containers:
+        - name: grafana-pdc-agent
+          image: grafana/pdc-agent:0.0.66
+          imagePullPolicy: IfNotPresent
+          args:
+            - -token
+            - $(TOKEN)
+            - -cluster
+            - $(CLUSTER)
+            - -gcloud-hosted-grafana-id
+            - $(HOSTED_GRAFANA_ID)
+          env:
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-pdc-agent
+                  key: token
+            - name: CLUSTER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-pdc-agent
+                  key: cluster
+            - name: HOSTED_GRAFANA_ID
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-pdc-agent
+                  key: hosted-grafana-id
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 192Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - all
