@@ -49,6 +49,14 @@ unset T
 # grafana-pdc: copy the 'kubectl create secret' command shown on the PDC page
 # of Grafana Cloud and add '-n grafana-pdc' to it
 sudo k0s kubectl create namespace grafana-pdc
+
+# cloudflared (mcp-proxmox, mcp-line-bot): the tunnel token is shown on the tunnel page of the Cloudflare dashboard
+for ns in mcp-proxmox mcp-line-bot; do
+  sudo k0s kubectl create namespace $ns
+  read -rsp "Tunnel token for $ns: " T; echo
+  sudo k0s kubectl -n $ns create secret generic cloudflared-token --from-literal=TUNNEL_TOKEN="$T"
+  unset T
+done
 #+end_src
 
 The R2 bucket =prometheus-remote-store= is managed in [[../cloudflare/r2.tf][cloudflare/r2.tf]]. The S3-compatible key is an account API token scoped to that bucket (Object Read & Write, no TTL), created in the Cloudflare dashboard.
@@ -104,3 +112,5 @@ The Manifest Deployer may re-apply a stack and undo a manual =scale= or =suspend
 
 - This repository is public. The manifests contain the Cloudflare account ID (already in the Terraform code) and a LAN IP, but no credentials.
 - Image tags are pinned by hand. Renovate does not look at these files yet.
+- Do not change a Deployment with =kubectl set image= / =edit= on the VM; edit the manifest here and merge a PR. The next sync would overwrite a live change anyway.
+- cloudflared: the Cloudflare notice of 2026-10-26 requires 2026.10.2 or later. When bumping, change the tag in both =stacks/mcp-proxmox/cloudflared.yaml= and =stacks/mcp-line-bot/cloudflared.yaml=.
