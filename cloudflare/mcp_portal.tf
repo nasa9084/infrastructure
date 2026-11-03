@@ -75,7 +75,9 @@ resource "cloudflare_zero_trust_access_application" "mcp_server" {
 }
 
 // Provider 5.28.1 plans on_behalf = true (its default) on every in-place update of
-// `servers`, even when false is set; only create honors the configured value. With true,
+// `servers`, even when false is set; only create honors the configured value.
+// https://github.com/cloudflare/terraform-provider-cloudflare/issues/7294
+// Remove the lifecycle workaround below once that is fixed. With true,
 // the portal requires a per-user grant for the server and its tools disappear for Google
 // login sessions. So in-place updates of `servers` are ignored, and a change in the server
 // list recreates the portal instead (the portal's Access app and its OAuth sessions stay).
