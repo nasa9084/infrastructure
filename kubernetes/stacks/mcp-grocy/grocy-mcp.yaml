@@ -976,7 +976,7 @@ spec:
             - --disable-pip-version-check
             - --require-hashes
             - --no-deps
-            - --only-binary=:all:
+            - "--only-binary=:all:"
             - --target=/deps
             - --requirement=/lock/requirements.txt
           env:
