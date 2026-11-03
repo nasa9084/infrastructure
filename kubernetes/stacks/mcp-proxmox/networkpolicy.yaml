@@ -1,4 +1,4 @@
-# Only the cloudflared connector may reach the MCP server. The server has no authentication of its
+# Only the cloudflared connector of the "k8s" tunnel may reach the MCP server. The server has no authentication of its
 # own (see proxmox-mcp.yaml), so this keeps other pods (e.g. grafana-pdc) away from it.
 # Enforced by kube-router (--run-firewall=true); traffic from the node itself (kubelet probes) is
 # still allowed by kube-router.
@@ -16,7 +16,13 @@ spec:
     - Ingress
   ingress:
     - from:
-        - podSelector:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                # mcp-proxmox: old location of the connector, removed after the move
+                values: [cloudflared, mcp-proxmox]
+          podSelector:
             matchLabels:
               app: cloudflared
       ports:
