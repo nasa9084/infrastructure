@@ -107,6 +107,22 @@ resource "cloudflare_dns_record" "mcp_proxmox" {
   proxied = true
 }
 
+import {
+  id = "08db5577586403ed45dd2981644cb873/091f8d901cee84c1172e8e0510585cd0"
+  to = cloudflare_dns_record.mcp_line_bot
+}
+
+// moved from the dashboard-made tunnel "mcp-line-bot" to the k8s tunnel
+resource "cloudflare_dns_record" "mcp_line_bot" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "mcp-line-bot"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.k8s.id}.cfargotunnel.com"
+  ttl     = 1
+  proxied = true
+}
+
 // MCP server portal (see mcp_portal.tf). Terraform does not create this record
 // for the portal; without it the portal returns 522.
 resource "cloudflare_dns_record" "mcp" {

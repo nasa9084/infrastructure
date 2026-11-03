@@ -53,6 +53,13 @@ sudo k0s kubectl create namespace grafana-pdc
 # proxmox-mcp: config.json of ProxmoxMCP-Plus (Proxmox API token of mcp@pve)
 sudo k0s kubectl -n mcp-proxmox create secret generic proxmox-mcp --from-file=config.json=./config.json
 
+# line-bot-mcp: LINE channel access token and the bearer token checked by its Caddy sidecar
+read -rsp 'LINE channel access token: ' L; echo
+read -rsp 'Gateway bearer token: ' G; echo
+sudo k0s kubectl -n mcp-line-bot create secret generic line-bot-mcp \
+  --from-literal=CHANNEL_ACCESS_TOKEN="$L" --from-literal=GATEWAY_BEARER_TOKEN="$G"
+unset L G
+
 # cloudflared (mcp-proxmox, mcp-line-bot): the tunnel token is shown on the tunnel page of the Cloudflare dashboard
 for ns in mcp-proxmox mcp-line-bot; do
   sudo k0s kubectl create namespace $ns
