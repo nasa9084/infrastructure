@@ -50,6 +50,9 @@ unset T
 # of Grafana Cloud and add '-n grafana-pdc' to it
 sudo k0s kubectl create namespace grafana-pdc
 
+# proxmox-mcp: config.json of ProxmoxMCP-Plus (Proxmox API token of mcp@pve)
+sudo k0s kubectl -n mcp-proxmox create secret generic proxmox-mcp --from-file=config.json=./config.json
+
 # cloudflared (mcp-proxmox, mcp-line-bot): the tunnel token is shown on the tunnel page of the Cloudflare dashboard
 for ns in mcp-proxmox mcp-line-bot; do
   sudo k0s kubectl create namespace $ns
