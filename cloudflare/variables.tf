@@ -18,3 +18,10 @@ variable "access_allowed_emails" {
   type        = list(string)
   sensitive   = true
 }
+
+// HCL variable, e.g. { proxmox = "..." }. Keys are the keys of local.mcp_servers.
+variable "mcp_server_bearer_tokens" {
+  description = "Bearer tokens that the MCP server portal sends to upstream MCP servers that check their own API key"
+  type        = map(string)
+  sensitive   = true
+}

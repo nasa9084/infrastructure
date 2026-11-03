@@ -7,7 +7,8 @@
 //
 // To add a server: Service + ingress in tunnel.tf, a self_hosted Access app that
 // includes cloudflare_zero_trust_access_policy.mcp_portal_upstream, then an
-// entry in local.mcp_servers.
+// entry in local.mcp_servers. If the server checks its own bearer token, add it
+// to the mcp_server_bearer_tokens variable under the same key.
 
 locals {
   mcp_servers = {
@@ -34,10 +35,16 @@ resource "cloudflare_zero_trust_access_ai_controls_mcp_server" "this" {
   hostname  = each.value.hostname
   auth_type = "bearer"
   auth_credentials = jsonencode({
-    headers = {
-      "cf-access-client-id"     = cloudflare_zero_trust_access_service_token.mcp_portal.client_id
-      "cf-access-client-secret" = cloudflare_zero_trust_access_service_token.mcp_portal.client_secret
-    }
+    headers = merge(
+      {
+        "cf-access-client-id"     = cloudflare_zero_trust_access_service_token.mcp_portal.client_id
+        "cf-access-client-secret" = cloudflare_zero_trust_access_service_token.mcp_portal.client_secret
+      },
+      // the server's own API key, if it has one
+      contains(keys(var.mcp_server_bearer_tokens), each.key) ? {
+        "authorization" = "Bearer ${var.mcp_server_bearer_tokens[each.key]}"
+      } : {},
+    )
   })
 
   // Cloudflare connects to the server on create to sync its tools, so the
