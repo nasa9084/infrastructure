@@ -1,39 +1,13 @@
 # LINE Bot MCP server (line-bot-mcp-server, stdio) exposed as Streamable HTTP by supergateway,
 # reached through the Cloudflare tunnel "k8s" (cloudflare/tunnel.tf).
 # Moved into git as it was applied by hand. The image is built on the node (imagePullPolicy: Never).
-# The namespace and the Secret (line-bot-mcp: CHANNEL_ACCESS_TOKEN, GATEWAY_BEARER_TOKEN) are created
-# by hand; see ../../README.org.
+# The namespace and the Secret (line-bot-mcp, key CHANNEL_ACCESS_TOKEN) are created by hand;
+# see ../../README.org.
 #
-# supergateway has no inbound auth, so the auth-proxy sidecar (Caddy) requires a fixed bearer token.
+# supergateway has no inbound auth. Authentication is done by Cloudflare Access: cloudflared forwards
+# a request only with a valid Access JWT for the mcp-line-bot app (origin_request.access), and
+# networkpolicy.yaml lets only that cloudflared reach this pod.
 # Memory: line-bot-mcp OOMs at 256Mi; supergateway starts a server process per session.
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: line-bot-mcp-caddy
-  namespace: mcp-line-bot
-data:
-  Caddyfile: |
-    {
-      admin off
-      auto_https off
-    }
-    :8080 {
-      log
-      # supergateway has no inbound auth, so require a bearer token here.
-      @authed {
-        header Authorization "Bearer {env.GATEWAY_BEARER_TOKEN}"
-        not header Authorization "Bearer "
-      }
-      handle @authed {
-        reverse_proxy 127.0.0.1:8000 {
-          flush_interval -1
-        }
-      }
-      handle {
-        respond "unauthorized" 401
-      }
-    }
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -63,11 +37,6 @@ spec:
                 secretKeyRef:
                   name: line-bot-mcp
                   key: CHANNEL_ACCESS_TOKEN
-            - name: GATEWAY_BEARER_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: line-bot-mcp
-                  key: GATEWAY_BEARER_TOKEN
           ports:
             - name: mcp
               containerPort: 8000
@@ -83,49 +52,6 @@ spec:
               memory: 768Mi
           securityContext:
             allowPrivilegeEscalation: false
-        - name: auth-proxy
-          image: docker.io/library/caddy:2.10-alpine
-          imagePullPolicy: IfNotPresent
-          args:
-            - caddy
-            - run
-            - --config
-            - /etc/caddy/Caddyfile
-            - --adapter
-            - caddyfile
-          env:
-            - name: GATEWAY_BEARER_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: line-bot-mcp
-                  key: GATEWAY_BEARER_TOKEN
-            - name: XDG_DATA_HOME
-              value: /tmp
-            - name: XDG_CONFIG_HOME
-              value: /tmp
-          ports:
-            - name: auth
-              containerPort: 8080
-          readinessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 2
-          resources:
-            requests:
-              cpu: 10m
-              memory: 24Mi
-            limits:
-              memory: 96Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-          volumeMounts:
-            - name: caddyfile
-              mountPath: /etc/caddy
-              readOnly: true
-      volumes:
-        - name: caddyfile
-          configMap:
-            name: line-bot-mcp-caddy
 ---
 apiVersion: v1
 kind: Service
@@ -138,4 +64,4 @@ spec:
   ports:
     - name: mcp
       port: 8000
-      targetPort: 8080
+      targetPort: mcp

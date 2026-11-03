@@ -1,0 +1,27 @@
+# Only the cloudflared connector of the "k8s" tunnel (namespace mcp-proxmox) may reach the MCP server.
+# The server has no authentication of its own (see line-bot-mcp.yaml).
+# Enforced by kube-router (--run-firewall=true); traffic from the node itself (kubelet probes) is
+# still allowed by kube-router.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: line-bot-mcp-from-cloudflared
+  namespace: mcp-line-bot
+spec:
+  podSelector:
+    matchLabels:
+      app: line-bot-mcp
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: mcp-proxmox
+          podSelector:
+            matchLabels:
+              app: cloudflared
+      ports:
+        - protocol: TCP
+          port: 8000
