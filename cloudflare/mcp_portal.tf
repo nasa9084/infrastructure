@@ -69,6 +69,15 @@ resource "cloudflare_zero_trust_access_application" "mcp_server" {
   ]
 }
 
+// Provider 5.28.1 plans on_behalf = true (its default) on every in-place update of
+// `servers`, even when false is set; only create honors the configured value. With true,
+// the portal requires a per-user grant for the server and its tools disappear for Google
+// login sessions. So in-place updates of `servers` are ignored, and a change in the server
+// list recreates the portal instead (the portal's Access app and its OAuth sessions stay).
+resource "terraform_data" "mcp_portal_servers" {
+  input = sort(keys(local.mcp_servers))
+}
+
 resource "cloudflare_zero_trust_access_ai_controls_mcp_portal" "home" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
@@ -79,13 +88,14 @@ resource "cloudflare_zero_trust_access_ai_controls_mcp_portal" "home" {
   servers = [
     for id, _ in local.mcp_servers : {
       server_id = cloudflare_zero_trust_access_ai_controls_mcp_server.this[id].id
-      // Provider 5.28.1 plans the default (true) on every update even when false is set, so
-      // keep it true. The servers use bearer credentials (no per-user OAuth), so Google login
-      // sessions still use the portal's credential; only service-token sessions to the portal
-      // would skip these servers, and none are used.
-      on_behalf = true
+      on_behalf = false // use the portal's credential (bearer) for every user
     }
   ]
+
+  lifecycle {
+    ignore_changes       = [servers]
+    replace_triggered_by = [terraform_data.mcp_portal_servers]
+  }
 }
 
 resource "cloudflare_zero_trust_access_application" "mcp_portal" {
