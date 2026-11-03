@@ -38,3 +38,54 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "proxmox" {
     ]
   }
 }
+
+// Tunnel for the home k0s cluster. The connector runs as a Deployment in
+// kubernetes/stacks/mcp-proxmox/cloudflared.yaml. Created in the dashboard and
+// imported here so that new MCP servers can be added by Terraform.
+import {
+  id = "abe0a185132e745748442fe5611bfff7/b3caacbf-0de6-460b-adf9-7c764c024971"
+  to = cloudflare_zero_trust_tunnel_cloudflared.k8s
+}
+
+resource "cloudflare_zero_trust_tunnel_cloudflared" "k8s" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name       = "k8s"
+  config_src = "cloudflare"
+}
+
+import {
+  id = "abe0a185132e745748442fe5611bfff7/b3caacbf-0de6-460b-adf9-7c764c024971"
+  to = cloudflare_zero_trust_tunnel_cloudflared_config.k8s
+}
+
+resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.k8s.id
+
+  source = "cloudflare"
+  config = {
+    ingress = [
+      {
+        service  = "http://proxmox-mcp.mcp-proxmox.svc:8000"
+        hostname = "mcp-proxmox.web-apps.tech"
+
+        origin_request = {
+          http_host_header = "proxmox-mcp.mcp-proxmox.svc:8000"
+
+          // cloudflared rejects requests without a valid Access JWT for this
+          // application, so the origin stays closed even if the Access app is
+          // misconfigured.
+          access = {
+            required  = true
+            team_name = "nasa9084"
+            aud_tag   = [cloudflare_zero_trust_access_application.mcp_proxmox.aud]
+          }
+        }
+      },
+      {
+        service = "http_status:404"
+      },
+    ]
+  }
+}

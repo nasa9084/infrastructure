@@ -92,6 +92,33 @@ resource "cloudflare_dns_record" "proxmox" {
   proxied = true
 }
 
+import {
+  id = "08db5577586403ed45dd2981644cb873/8722adb1e0301913d5d15084a1764ceb"
+  to = cloudflare_dns_record.mcp_proxmox
+}
+
+resource "cloudflare_dns_record" "mcp_proxmox" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "mcp-proxmox"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.k8s.id}.cfargotunnel.com"
+  ttl     = 1
+  proxied = true
+}
+
+// MCP server portal (see mcp_portal.tf). Terraform does not create this record
+// for the portal; without it the portal returns 522.
+resource "cloudflare_dns_record" "mcp" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "mcp"
+  type    = "CNAME"
+  content = "gateway.agents.cloudflare.com"
+  ttl     = 1
+  proxied = true
+}
+
 // //////////////////////////////
 // TXT records
 // //////////////////////////////
