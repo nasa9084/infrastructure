@@ -117,3 +117,22 @@ resource "cloudflare_zero_trust_access_application" "mcp_line_bot" {
     { id = cloudflare_zero_trust_access_policy.mcp_portal_upstream.id, precedence = 1 },
   ]
 }
+
+// Reached only through the portal; Claude Code can use the portal too (OAuth
+// on localhost is allowed), so there is no separate service token.
+resource "cloudflare_zero_trust_access_application" "mcp_grocy" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name             = "mcp-grocy"
+  type             = "self_hosted"
+  domain           = "mcp-grocy.web-apps.tech"
+  session_duration = "24h"
+
+  destinations = [
+    { type = "public", uri = "mcp-grocy.web-apps.tech" },
+  ]
+
+  policies = [
+    { id = cloudflare_zero_trust_access_policy.mcp_portal_upstream.id, precedence = 1 },
+  ]
+}
