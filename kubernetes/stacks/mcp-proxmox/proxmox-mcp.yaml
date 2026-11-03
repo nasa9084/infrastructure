@@ -1,0 +1,89 @@
+# ProxmoxMCP-Plus (https://github.com/RekklesNA/ProxmoxMCP-Plus), reached only through the
+# Cloudflare tunnel "k8s" (cloudflare/tunnel.tf).
+# The namespace and the Secret (proxmox-mcp, key config.json) are created by hand; see ../../README.org.
+#
+# No MCP_API_KEY: authentication is done by Cloudflare Access. cloudflared forwards a request only
+# when it carries a valid Access JWT for the mcp-proxmox app (origin_request.access), and
+# networkpolicy.yaml lets only that cloudflared reach this pod.
+# The image is pinned by digest (the one that was running when this file was added).
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxmox-mcp
+  namespace: mcp-proxmox
+  labels:
+    app: proxmox-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxmox-mcp
+  template:
+    metadata:
+      labels:
+        app: proxmox-mcp
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: proxmox-mcp
+          image: ghcr.io/rekklesna/proxmoxmcp-plus@sha256:ac9580e9c51c345620dd2dec3c93c147f8f537cbba8a14f7e479931542cc4d6d
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PROXMOX_MCP_MODE
+              value: mcp-http
+            - name: MCP_TRANSPORT
+              value: STREAMABLE_HTTP
+            - name: MCP_HOST
+              value: 0.0.0.0
+            - name: MCP_PORT
+              value: "8000"
+            - name: PROXMOX_VERIFY_SSL
+              value: "true"
+            - name: MCP_DNS_REBINDING_PROTECTION
+              value: "true"
+            - name: MCP_ALLOWED_HOSTS
+              value: mcp-proxmox.web-apps.tech:*,mcp-proxmox.web-apps.tech,proxmox-mcp.mcp-proxmox.svc:*,proxmox-mcp.mcp-proxmox.svc.cluster.local:*,localhost:*,127.0.0.1:*
+            - name: MCP_ALLOWED_ORIGINS
+              value: https://mcp-proxmox.web-apps.tech,https://claude.ai
+            - name: MCP_ALLOW_UNAUTHENTICATED_HTTP
+              value: "true"
+          ports:
+            - name: mcp
+              containerPort: 8000
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 384Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: config
+              mountPath: /app/proxmox-config
+              readOnly: true
+      volumes:
+        - name: config
+          secret:
+            secretName: proxmox-mcp
+            items:
+              - key: config.json
+                path: config.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxmox-mcp
+  namespace: mcp-proxmox
+spec:
+  selector:
+    app: proxmox-mcp
+  ports:
+    - name: mcp
+      port: 8000
+      targetPort: mcp
