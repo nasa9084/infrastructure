@@ -79,7 +79,11 @@ resource "cloudflare_zero_trust_access_ai_controls_mcp_portal" "home" {
   servers = [
     for id, _ in local.mcp_servers : {
       server_id = cloudflare_zero_trust_access_ai_controls_mcp_server.this[id].id
-      on_behalf = false // use the portal's credential (the service token) for every user
+      // Provider 5.28.1 plans the default (true) on every update even when false is set, so
+      // keep it true. The servers use bearer credentials (no per-user OAuth), so Google login
+      // sessions still use the portal's credential; only service-token sessions to the portal
+      // would skip these servers, and none are used.
+      on_behalf = true
     }
   ]
 }
