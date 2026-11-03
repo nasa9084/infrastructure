@@ -1,4 +1,4 @@
-# Only the cloudflared connector of the "k8s" tunnel may reach the MCP server.
+# Only the cloudflared connector of the "k8s" tunnel (namespace cloudflared, ../cloudflared/) may reach the MCP server.
 # The server has no authentication of its own (see line-bot-mcp.yaml).
 # Enforced by kube-router (--run-firewall=true); traffic from the node itself (kubelet probes) is
 # still allowed by kube-router.
@@ -17,11 +17,8 @@ spec:
   ingress:
     - from:
         - namespaceSelector:
-            matchExpressions:
-              - key: kubernetes.io/metadata.name
-                operator: In
-                # mcp-proxmox: old location of the connector, removed after the move
-                values: [cloudflared, mcp-proxmox]
+            matchLabels:
+              kubernetes.io/metadata.name: cloudflared
           podSelector:
             matchLabels:
               app: cloudflared
