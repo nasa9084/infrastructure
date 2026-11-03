@@ -19,6 +19,10 @@ locals {
       name     = "LINE Bot"
       hostname = "https://mcp-line-bot.web-apps.tech/mcp"
     }
+    grocy = {
+      name     = "Grocy"
+      hostname = "https://mcp-grocy.web-apps.tech/mcp"
+    }
   }
 
   // Claude's OAuth callback; claude.com may replace claude.ai in the future.
@@ -49,6 +53,7 @@ resource "cloudflare_zero_trust_access_ai_controls_mcp_server" "this" {
   depends_on = [
     cloudflare_zero_trust_access_application.mcp_proxmox,
     cloudflare_zero_trust_access_application.mcp_line_bot,
+    cloudflare_zero_trust_access_application.mcp_grocy,
     cloudflare_zero_trust_tunnel_cloudflared_config.k8s,
   ]
 }

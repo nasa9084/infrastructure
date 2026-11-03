@@ -96,6 +96,20 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s" {
         }
       },
       {
+        service  = "http://grocy-mcp.mcp-grocy.svc:8000"
+        hostname = "mcp-grocy.web-apps.tech"
+
+        origin_request = {
+          http_host_header = "grocy-mcp.mcp-grocy.svc:8000"
+
+          access = {
+            required  = true
+            team_name = "nasa9084"
+            aud_tag   = [cloudflare_zero_trust_access_application.mcp_grocy.aud]
+          }
+        }
+      },
+      {
         service = "http_status:404"
       },
     ]
