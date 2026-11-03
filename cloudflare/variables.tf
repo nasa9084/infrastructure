@@ -10,3 +10,11 @@ variable "google_oauth_client_secret" {
   type        = string
   sensitive   = true
 }
+
+// HCL variable, e.g. ["someone@example.com"]. Sensitive so that the addresses
+// do not appear in the plan comments of this public repository.
+variable "access_allowed_emails" {
+  description = "Email addresses allowed by the reusable Access policy \"Email\""
+  type        = list(string)
+  sensitive   = true
+}

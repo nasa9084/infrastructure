@@ -31,7 +31,7 @@ resource "cloudflare_zero_trust_access_policy" "email" {
   name     = "Email"
   decision = "allow"
   include = [
-    { email = { email = "nasa.9084.bassclarinet@gmail.com" } },
+    for e in var.access_allowed_emails : { email = { email = e } }
   ]
 }
 
