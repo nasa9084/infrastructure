@@ -75,7 +75,11 @@ resource "cloudflare_zero_trust_access_application" "mcp_server" {
 // login sessions. So in-place updates of `servers` are ignored, and a change in the server
 // list recreates the portal instead (the portal's Access app and its OAuth sessions stay).
 resource "terraform_data" "mcp_portal_servers" {
-  input = sort(keys(local.mcp_servers))
+  input = {
+    servers = sort(keys(local.mcp_servers))
+    // Bump to force the portal to be recreated (e.g. to reset on_behalf after an in-place update).
+    generation = 1
+  }
 }
 
 resource "cloudflare_zero_trust_access_ai_controls_mcp_portal" "home" {
