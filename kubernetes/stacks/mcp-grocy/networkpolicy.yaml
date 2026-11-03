@@ -1,5 +1,6 @@
-# Only the cloudflared connector of the "k8s" tunnel (namespace mcp-proxmox) may reach the MCP
-# server. The server has no authentication of its own (see grocy-mcp.yaml).
+# Only the cloudflared connectors may reach the MCP server. The server has no authentication of its
+# own (see grocy-mcp.yaml). Both connector namespaces are allowed so that this keeps working if the
+# connector in mcp-line-bot also runs the "k8s" tunnel.
 # Enforced by kube-router (--run-firewall=true); traffic from the node itself (kubelet probes) is
 # still allowed by kube-router.
 ---
@@ -17,8 +18,10 @@ spec:
   ingress:
     - from:
         - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: mcp-proxmox
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [mcp-proxmox, mcp-line-bot]
           podSelector:
             matchLabels:
               app: cloudflared
