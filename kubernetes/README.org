@@ -60,6 +60,12 @@ sudo k0s kubectl -n mcp-line-bot create secret generic line-bot-mcp \
   --from-literal=CHANNEL_ACCESS_TOKEN="$L" --from-literal=GATEWAY_BEARER_TOKEN="$G"
 unset L G
 
+# grocy-mcp: an API key made for it in Grocy (Manage API keys)
+sudo k0s kubectl create namespace mcp-grocy
+read -rsp 'Grocy API key: ' K; echo
+sudo k0s kubectl -n mcp-grocy create secret generic grocy-mcp --from-literal=GROCY_API_KEY="$K"
+unset K
+
 # cloudflared (mcp-proxmox, mcp-line-bot): the tunnel token is shown on the tunnel page of the Cloudflare dashboard
 for ns in mcp-proxmox mcp-line-bot; do
   sudo k0s kubectl create namespace $ns
