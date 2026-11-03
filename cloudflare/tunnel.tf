@@ -84,10 +84,16 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s" {
         }
       },
       {
-        // Still authenticated by the Caddy sidecar in the pod (fixed bearer) for the
-        // "LINE Bot" claude.ai connector; moves behind Access in a follow-up.
         service  = "http://line-bot-mcp.mcp-line-bot.svc.cluster.local:8000"
         hostname = "mcp-line-bot.web-apps.tech"
+
+        origin_request = {
+          access = {
+            required  = true
+            team_name = "nasa9084"
+            aud_tag   = [cloudflare_zero_trust_access_application.mcp_line_bot.aud]
+          }
+        }
       },
       {
         service = "http_status:404"

@@ -98,3 +98,22 @@ resource "cloudflare_zero_trust_access_application" "mcp_proxmox" {
     { id = cloudflare_zero_trust_access_policy.mcp_portal_upstream.id, precedence = 2 },
   ]
 }
+
+// Reached only through the portal (the "LINE Bot" claude.ai connector with a fixed bearer
+// is retired), so only the portal's service token is allowed.
+resource "cloudflare_zero_trust_access_application" "mcp_line_bot" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name             = "mcp-line-bot"
+  type             = "self_hosted"
+  domain           = "mcp-line-bot.web-apps.tech"
+  session_duration = "24h"
+
+  destinations = [
+    { type = "public", uri = "mcp-line-bot.web-apps.tech" },
+  ]
+
+  policies = [
+    { id = cloudflare_zero_trust_access_policy.mcp_portal_upstream.id, precedence = 1 },
+  ]
+}
