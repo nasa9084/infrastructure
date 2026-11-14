@@ -18,10 +18,3 @@ variable "access_allowed_emails" {
   type        = list(string)
   sensitive   = true
 }
-
-// Sensitive for the same reason as access_allowed_emails.
-variable "notification_email" {
-  description = "Email address that receives Cloudflare notifications"
-  type        = string
-  sensitive   = true
-}
