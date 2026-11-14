@@ -1,31 +1,16 @@
 // Zone settings changed from the default in the dashboard. Other settings are
 // left at the Cloudflare defaults and are not managed here.
 
-import {
-  id = "08db5577586403ed45dd2981644cb873/always_use_https"
-  to = cloudflare_zone_setting.always_use_https
-}
-
 resource "cloudflare_zone_setting" "always_use_https" {
   zone_id    = cloudflare_zone.web_apps_tech.id
   setting_id = "always_use_https"
   value      = "on"
 }
 
-import {
-  id = "08db5577586403ed45dd2981644cb873/ipv6"
-  to = cloudflare_zone_setting.ipv6
-}
-
 resource "cloudflare_zone_setting" "ipv6" {
   zone_id    = cloudflare_zone.web_apps_tech.id
   setting_id = "ipv6"
   value      = "on"
-}
-
-import {
-  id = "08db5577586403ed45dd2981644cb873/ssl"
-  to = cloudflare_zone_setting.ssl
 }
 
 // Only the redirect-only A records and tunnels are proxied, so the edge never
