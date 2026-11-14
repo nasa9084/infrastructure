@@ -136,3 +136,18 @@ resource "cloudflare_zero_trust_access_application" "mcp_grocy" {
     { id = cloudflare_zero_trust_access_policy.mcp_portal_upstream.id, precedence = 1 },
   ]
 }
+
+// One-time PIN login method. Enabled by default when Zero Trust was set up;
+// the portal only allows Google (allowed_idps in mcp_portal.tf).
+import {
+  id = "accounts/abe0a185132e745748442fe5611bfff7/419eaafb-edf6-472a-bce4-d2ade194b517"
+  to = cloudflare_zero_trust_access_identity_provider.onetimepin
+}
+
+resource "cloudflare_zero_trust_access_identity_provider" "onetimepin" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name   = ""
+  type   = "onetimepin"
+  config = {}
+}
