@@ -20,11 +20,6 @@ resource "cloudflare_zero_trust_access_identity_provider" "google" {
 // Reusable policies
 // //////////////////////////////
 
-import {
-  id = "abe0a185132e745748442fe5611bfff7/88c9f82b-bb8e-4ac5-a6be-231ac0168dd2"
-  to = cloudflare_zero_trust_access_policy.email
-}
-
 resource "cloudflare_zero_trust_access_policy" "email" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
@@ -33,11 +28,6 @@ resource "cloudflare_zero_trust_access_policy" "email" {
   include = [
     for e in var.access_allowed_emails : { email = { email = e } }
   ]
-}
-
-import {
-  id = "abe0a185132e745748442fe5611bfff7/69fdd9f8-5480-4978-bea7-a2a66fad4998"
-  to = cloudflare_zero_trust_access_policy.mcp_proxmox
 }
 
 // Service token used by Claude Code / Desktop (claude-mcp-proxmox, created in
@@ -74,11 +64,6 @@ resource "cloudflare_zero_trust_access_policy" "mcp_portal_upstream" {
   include = [
     { service_token = { token_id = cloudflare_zero_trust_access_service_token.mcp_portal.id } },
   ]
-}
-
-import {
-  id = "accounts/abe0a185132e745748442fe5611bfff7/50f0446c-bb40-4f9b-93b6-8ee601a3ba9c"
-  to = cloudflare_zero_trust_access_application.mcp_proxmox
 }
 
 resource "cloudflare_zero_trust_access_application" "mcp_proxmox" {
@@ -139,11 +124,6 @@ resource "cloudflare_zero_trust_access_application" "mcp_grocy" {
 
 // One-time PIN login method. Enabled by default when Zero Trust was set up;
 // the portal only allows Google (allowed_idps in mcp_portal.tf).
-import {
-  id = "accounts/abe0a185132e745748442fe5611bfff7/419eaafb-edf6-472a-bce4-d2ade194b517"
-  to = cloudflare_zero_trust_access_identity_provider.onetimepin
-}
-
 resource "cloudflare_zero_trust_access_identity_provider" "onetimepin" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
