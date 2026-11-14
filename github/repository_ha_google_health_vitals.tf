@@ -1,8 +1,3 @@
-import {
-  id = "ha-google-health-vitals"
-  to = github_repository.ha_google_health_vitals
-}
-
 resource "github_repository" "ha_google_health_vitals" {
   name        = "ha-google-health-vitals"
   description = "Home Assistant custom integration for vitals (SpO2, HRV, etc.) from the Google Health API"

@@ -12,11 +12,6 @@ resource "cloudflare_zero_trust_tunnel_cloudflared" "proxmox" {
   config_src = "cloudflare"
 }
 
-import {
-  id = "abe0a185132e745748442fe5611bfff7/de18fe13-9a83-48c4-a525-5624d03bd64a"
-  to = cloudflare_zero_trust_tunnel_cloudflared_config.proxmox
-}
-
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "proxmox" {
   account_id = cloudflare_zone.web_apps_tech.account.id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.proxmox.id
@@ -42,21 +37,11 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "proxmox" {
 // Tunnel for the home k0s cluster. The connector runs as a Deployment in
 // kubernetes/stacks/mcp-proxmox/cloudflared.yaml. Created in the dashboard and
 // imported here so that new MCP servers can be added by Terraform.
-import {
-  id = "abe0a185132e745748442fe5611bfff7/b3caacbf-0de6-460b-adf9-7c764c024971"
-  to = cloudflare_zero_trust_tunnel_cloudflared.k8s
-}
-
 resource "cloudflare_zero_trust_tunnel_cloudflared" "k8s" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
   name       = "k8s"
   config_src = "cloudflare"
-}
-
-import {
-  id = "abe0a185132e745748442fe5611bfff7/b3caacbf-0de6-460b-adf9-7c764c024971"
-  to = cloudflare_zero_trust_tunnel_cloudflared_config.k8s
 }
 
 resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s" {

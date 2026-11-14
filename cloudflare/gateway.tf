@@ -1,11 +1,6 @@
 // Default Gateway policies created by Cloudflare when Zero Trust was set up.
 // Imported as they are so that they are no longer managed only in the dashboard.
 
-import {
-  id = "abe0a185132e745748442fe5611bfff7/9a0dbc1f-afb8-44bc-abce-5fd2b9104b68"
-  to = cloudflare_zero_trust_gateway_policy.do_not_inspect
-}
-
 resource "cloudflare_zero_trust_gateway_policy" "do_not_inspect" {
   account_id = cloudflare_zone.web_apps_tech.account.id
 
@@ -16,11 +11,6 @@ resource "cloudflare_zero_trust_gateway_policy" "do_not_inspect" {
   action      = "off"
   filters     = ["http"]
   traffic     = "any(app.type.ids[*] in {16})"
-}
-
-import {
-  id = "abe0a185132e745748442fe5611bfff7/7c5cb6e3-5323-4a74-9a9c-91474ee6816d"
-  to = cloudflare_zero_trust_gateway_policy.default_deny_private
 }
 
 resource "cloudflare_zero_trust_gateway_policy" "default_deny_private" {
