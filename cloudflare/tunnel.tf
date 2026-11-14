@@ -40,7 +40,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "proxmox" {
 }
 
 // Tunnel for the home k0s cluster. The connector runs as a Deployment in
-// kubernetes/stacks/mcp-proxmox/cloudflared.yaml. Created in the dashboard and
+// kubernetes/stacks/cloudflared/cloudflared.yaml. Created in the dashboard and
 // imported here so that new MCP servers can be added by Terraform.
 import {
   id = "abe0a185132e745748442fe5611bfff7/b3caacbf-0de6-460b-adf9-7c764c024971"
