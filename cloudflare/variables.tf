@@ -18,3 +18,11 @@ variable "access_allowed_emails" {
   type        = list(string)
   sensitive   = true
 }
+
+// HCL variable: the owner's and the family members' addresses. Sensitive for
+// the same reason as access_allowed_emails.
+variable "hondana_allowed_emails" {
+  description = "Email addresses that may sign in to hondana.web-apps.tech (kkids-sync)"
+  type        = list(string)
+  sensitive   = true
+}

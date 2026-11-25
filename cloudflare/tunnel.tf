@@ -95,6 +95,20 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "k8s" {
         }
       },
       {
+        service  = "http://kkids-sync-web.kkids-sync.svc:8080"
+        hostname = "hondana.web-apps.tech"
+
+        // No http_host_header: the app compares the Origin of form posts with
+        // the Host header, which must stay hondana.web-apps.tech.
+        origin_request = {
+          access = {
+            required  = true
+            team_name = "nasa9084"
+            aud_tag   = [cloudflare_zero_trust_access_application.hondana.aud]
+          }
+        }
+      },
+      {
         service = "http_status:404"
       },
     ]

@@ -72,6 +72,17 @@ sudo k0s kubectl create namespace cloudflared
 read -rsp "Tunnel token of k8s: " T; echo
 sudo k0s kubectl -n cloudflared create secret generic cloudflared-token --from-literal=TUNNEL_TOKEN="$T"
 unset T
+
+# kkids-sync (ほんだな): data directories owned by the images' user (65532), a random token
+# shared by web and the reconciler, and the AUD of the Access app "hondana" (Zero Trust >
+# Access > Applications > hondana > Overview > Application Audience (AUD) Tag)
+sudo install -d -o 65532 -g 65532 -m 0700 /var/lib/kkids-sync/web /var/lib/kkids-sync/reconciler
+sudo k0s kubectl create namespace kkids-sync
+read -rsp 'AUD of hondana: ' A; echo
+sudo k0s kubectl -n kkids-sync create secret generic kkids-sync \
+  --from-literal=INTERNAL_TOKEN="$(openssl rand -hex 32)" \
+  --from-literal=ACCESS_AUD="$A"
+unset A
 #+end_src
 
 The R2 bucket =prometheus-remote-store= is managed in [[../cloudflare/r2.tf][cloudflare/r2.tf]]. The S3-compatible key is an account API token scoped to that bucket (Object Read & Write, no TTL), created in the Cloudflare dashboard.
@@ -92,6 +103,43 @@ sudo systemctl enable --now k0s-manifest-sync.timer
 #+end_src
 
 The script and units are not updated by the sync itself; re-run the =curl= lines when they change.
+
+** kkids-sync (ほんだな)
+
+Manual steps that the manifests in =stacks/kkids-sync/= cannot do. Run on the k0s VM; =web= runs the
+=kkids-sync-web= CLI in the running pod.
+
+#+begin_src sh
+web() { sudo k0s kubectl -n kkids-sync exec deploy/kkids-sync-web -- kkids-sync-web "$@"; }
+#+end_src
+
+*** First setup
+
+1. Create the namespace, Secret and directories (above), and set =hondana_allowed_emails= in the
+   Terraform Cloud workspace before the Terraform change is applied.
+2. Sign in to Amazon on the Mac (=make reconciler-login= in kkids-sync) and copy
+   =.poc/storage-state.json= to the VM, then:
+   #+begin_src sh
+   sudo install -o 65532 -g 65532 -m 0600 storage-state.json /var/lib/kkids-sync/reconciler/
+   rm storage-state.json
+   #+end_src
+   The file holds live Amazon cookies: never commit it or leave a copy around.
+3. Register the people (profile names as the parent dashboard shows them):
+   #+begin_src sh
+   web member add -name 自分 -email OWNER -role admin
+   web member add -name 母 -email MOM -kids-profile-name MOM_PROFILE
+   web member add -name 妹 -email SISTER -kids-profile-name SISTER_PROFILE
+   #+end_src
+4. The first job syncs the whole library into web and links the profiles, then refuses the plan
+   (exit code 4): nobody has selected anything yet, so it would remove every share. Once it has
+   finished (=sudo k0s kubectl -n kkids-sync get jobs=), run =web bootstrap= so that today's
+   shares become the family's selections, and check =web member list=. Until then every job
+   stops the same way; nothing is removed.
+
+*** When the Amazon session expires
+
+The job fails with exit code 3 (also shown on the admin page's job history). Sign in again on the
+Mac and copy the file as in step 2.
 
 ** Runbooks
 
