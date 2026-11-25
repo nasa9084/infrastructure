@@ -19,7 +19,7 @@ spec:
     runAsNonRoot: true
   containers:
     - name: login
-      image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.8
+      image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.9
       imagePullPolicy: IfNotPresent
       command: ["/usr/bin/tini", "--", "/usr/local/bin/kkids-sync-login"]
       ports:
