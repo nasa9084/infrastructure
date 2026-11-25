@@ -123,6 +123,16 @@ resource "cloudflare_dns_record" "mcp_grocy" {
   proxied = true
 }
 
+resource "cloudflare_dns_record" "hondana" {
+  zone_id = cloudflare_zone.web_apps_tech.id
+
+  name    = "hondana"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.k8s.id}.cfargotunnel.com"
+  ttl     = 1
+  proxied = true
+}
+
 // MCP server portal (see mcp_portal.tf). Terraform does not create this record
 // for the portal; without it the portal returns 522.
 resource "cloudflare_dns_record" "mcp" {

@@ -1,0 +1,98 @@
+# ほんだな (https://github.com/nasa9084/kkids-sync): the family's book picker and the owner's admin pages.
+# Reached through the Cloudflare tunnel "k8s" at hondana.web-apps.tech (cloudflare/tunnel.tf); Cloudflare
+# Access (email one-time PIN) signs people in, and the app checks the Access JWT itself as well.
+# Port 8081 is the internal API for the reconciler (reconciler.yaml), with a bearer token.
+#
+# The namespace, the Secret (kkids-sync: INTERNAL_TOKEN, ACCESS_AUD) and the hostPath directory are
+# created by hand; see ../../README.org. SQLite and the cover cache live in /var/lib/kkids-sync/web,
+# so this assumes a single node.
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kkids-sync-web
+  namespace: kkids-sync
+  labels:
+    app: kkids-sync-web
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate # one writer for the SQLite file
+  selector:
+    matchLabels:
+      app: kkids-sync-web
+  template:
+    metadata:
+      labels:
+        app: kkids-sync-web
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        runAsNonRoot: true
+      containers:
+        - name: web
+          image: ghcr.io/nasa9084/kkids-sync-web:0.1.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KKIDS_ACCESS_TEAM_DOMAIN
+              value: nasa9084.cloudflareaccess.com
+            - name: KKIDS_ACCESS_AUD
+              valueFrom:
+                secretKeyRef:
+                  name: kkids-sync
+                  key: ACCESS_AUD
+            - name: KKIDS_INTERNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: kkids-sync
+                  key: INTERNAL_TOKEN
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: internal
+              containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/lib/kkids-sync/web
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kkids-sync-web
+  namespace: kkids-sync
+spec:
+  selector:
+    app: kkids-sync-web
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+    - name: internal
+      port: 8081
+      targetPort: internal

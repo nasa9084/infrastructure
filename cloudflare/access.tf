@@ -122,6 +122,44 @@ resource "cloudflare_zero_trust_access_application" "mcp_grocy" {
   ]
 }
 
+// //////////////////////////////
+// ほんだな (kkids-sync)
+// //////////////////////////////
+
+// Family members and the owner sign in with an email one-time PIN; the owner
+// can use Google as well. The app itself decides who may see the admin pages.
+resource "cloudflare_zero_trust_access_policy" "hondana" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name     = "hondana"
+  decision = "allow"
+  include = [
+    for e in var.hondana_allowed_emails : { email = { email = e } }
+  ]
+}
+
+resource "cloudflare_zero_trust_access_application" "hondana" {
+  account_id = cloudflare_zone.web_apps_tech.account.id
+
+  name             = "hondana"
+  type             = "self_hosted"
+  domain           = "hondana.web-apps.tech"
+  session_duration = "720h" // family members should not have to sign in often
+
+  destinations = [
+    { type = "public", uri = "hondana.web-apps.tech" },
+  ]
+
+  allowed_idps = [
+    cloudflare_zero_trust_access_identity_provider.onetimepin.id,
+    cloudflare_zero_trust_access_identity_provider.google.id,
+  ]
+
+  policies = [
+    { id = cloudflare_zero_trust_access_policy.hondana.id, precedence = 1 },
+  ]
+}
+
 // One-time PIN login method. Enabled by default when Zero Trust was set up;
 // the portal only allows Google (allowed_idps in mcp_portal.tf).
 resource "cloudflare_zero_trust_access_identity_provider" "onetimepin" {

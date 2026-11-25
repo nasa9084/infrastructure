@@ -1,0 +1,78 @@
+# The reconciler of ほんだな: applies the family's picks on the Amazon Kids parent dashboard with a
+# headful Chromium (under Xvfb) and syncs the library into web. Every 10 minutes it asks web for the
+# plan; with nothing to change it exits without starting a browser. It syncs at least once a day.
+#
+# /var/lib/kkids-sync/reconciler holds storage-state.json (the Amazon session: live cookies, mode
+# 0600) and snapshot.json. The session is signed in on a desktop and copied here; see ../../README.org.
+# Exit code 3 means the session has expired, 4 that the plan was larger than -max-changes.
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kkids-sync-reconciler
+  namespace: kkids-sync
+spec:
+  schedule: "*/10 * * * *"
+  timeZone: Asia/Tokyo
+  concurrencyPolicy: Forbid # one browser and one writer of the session file at a time
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 3600 # a full first sync scrolls the whole library
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels:
+            app: kkids-sync-reconciler
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            runAsNonRoot: true
+          containers:
+            - name: reconciler
+              image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.0
+              imagePullPolicy: IfNotPresent
+              args:
+                - -state
+                - /data/storage-state.json
+                - -out
+                - /data/snapshot.json
+                - -web
+                - http://kkids-sync-web.kkids-sync.svc:8081
+                - -jitter
+                - 3m
+                - run
+              env:
+                - name: KKIDS_INTERNAL_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: kkids-sync
+                      key: INTERNAL_TOKEN
+              resources:
+                requests:
+                  cpu: 200m
+                  memory: 384Mi
+                limits:
+                  memory: 1Gi
+              securityContext:
+                allowPrivilegeEscalation: false
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+                - name: dshm # Chromium needs more than the default 64MB of /dev/shm
+                  mountPath: /dev/shm
+          volumes:
+            - name: data
+              hostPath:
+                path: /var/lib/kkids-sync/reconciler
+                type: Directory
+            - name: dshm
+              emptyDir:
+                medium: Memory
+                sizeLimit: 128Mi
