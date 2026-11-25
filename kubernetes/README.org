@@ -24,7 +24,7 @@ The script only touches stacks it created itself (tracked in =/var/lib/k0s-manif
 - Always set =metadata.namespace= explicitly; the deployer has no default namespace.
 - *Do not put a =Namespace= object in a stack.* Removing the file would prune the namespace together with the Secrets that were created by hand.
 - *No Secrets in Git.* Create namespaces and Secrets by hand (below).
-- Keep resource requests small. The node has 1 vCPU and about 2.2GB of RAM.
+- Keep resource requests small. The node has 2 vCPUs and about 3.5GB of RAM (4GB since 2026-11-25, for the headful Chromium of kkids-sync).
 - Removing a file deletes its resources. hostPath data is not deleted.
 
 ** Namespaces and Secrets (by hand)
