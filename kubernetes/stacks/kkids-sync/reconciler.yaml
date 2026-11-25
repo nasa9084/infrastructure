@@ -3,7 +3,7 @@
 # plan; with nothing to change it exits without starting a browser. It syncs at least once a day.
 #
 # /var/lib/kkids-sync/reconciler holds storage-state.json (the Amazon session: live cookies, mode
-# 0600) and snapshot.json. The session is signed in on a desktop and copied here; see ../../README.org.
+# 0600) and snapshot.json. The session is signed in with runbooks/kkids-sync-login.yaml; see ../../README.org.
 # Exit code 3 means the session has expired, 4 that the plan was larger than -max-changes.
 ---
 apiVersion: batch/v1
@@ -36,7 +36,7 @@ spec:
             runAsNonRoot: true
           containers:
             - name: reconciler
-              image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.1
+              image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.2
               imagePullPolicy: IfNotPresent
               args:
                 - -state

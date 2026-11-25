@@ -117,13 +117,7 @@ web() { sudo k0s kubectl -n kkids-sync exec deploy/kkids-sync-web -- kkids-sync-
 
 1. Create the namespace, Secret and directories (above), and set =hondana_allowed_emails= in the
    Terraform Cloud workspace before the Terraform change is applied.
-2. Sign in to Amazon on the Mac (=make reconciler-login= in kkids-sync) and copy
-   =.poc/storage-state.json= to the VM, then:
-   #+begin_src sh
-   sudo install -o 65532 -g 65532 -m 0600 storage-state.json /var/lib/kkids-sync/reconciler/
-   rm storage-state.json
-   #+end_src
-   The file holds live Amazon cookies: never commit it or leave a copy around.
+2. Sign in to Amazon from the cluster (below).
 3. Register the people (profile names as the parent dashboard shows them):
    #+begin_src sh
    web member add -name 自分 -email OWNER -role admin
@@ -136,10 +130,27 @@ web() { sudo k0s kubectl -n kkids-sync exec deploy/kkids-sync-web -- kkids-sync-
    shares become the family's selections, and check =web member list=. Until then every job
    stops the same way; nothing is removed.
 
-*** When the Amazon session expires
+*** Signing in to Amazon (first setup, and when the session expires)
 
-The job fails with exit code 3 (also shown on the admin page's job history). Sign in again on the
-Mac and copy the file as in step 2.
+A session signed in elsewhere (e.g. on the Mac) is treated as signed out here, so sign in with the
+reconciler's own browser. The job fails with exit code 3 (also on the admin page's job history)
+when this is needed again.
+
+#+begin_src sh
+raw=https://raw.githubusercontent.com/nasa9084/infrastructure/main/kubernetes/runbooks
+sudo mv /var/lib/kkids-sync/reconciler/storage-state.json{,.old} 2>/dev/null  # jobs stop before Amazon meanwhile
+sudo k0s kubectl apply -f "$raw/kkids-sync-login.yaml"
+sudo k0s kubectl -n kkids-sync logs -f pod/kkids-sync-login   # shows the VNC password
+#+end_src
+
+Open =http://<VM IP>:30680/vnc.html= on the LAN, enter the password, and sign in to Amazon
+(including the one-time code). The log says =signed in; session saved= once the parent dashboard
+shows; it gives up after 15 minutes. Then:
+
+#+begin_src sh
+sudo k0s kubectl delete -f "$raw/kkids-sync-login.yaml"
+sudo rm -f /var/lib/kkids-sync/reconciler/storage-state.json.old
+#+end_src
 
 ** Runbooks
 

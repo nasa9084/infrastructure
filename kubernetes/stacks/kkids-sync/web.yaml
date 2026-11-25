@@ -33,7 +33,7 @@ spec:
         runAsNonRoot: true
       containers:
         - name: web
-          image: ghcr.io/nasa9084/kkids-sync-web:0.1.1
+          image: ghcr.io/nasa9084/kkids-sync-web:0.1.2
           imagePullPolicy: IfNotPresent
           env:
             - name: KKIDS_ACCESS_TEAM_DOMAIN
