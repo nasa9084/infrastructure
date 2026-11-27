@@ -36,7 +36,7 @@ spec:
             runAsNonRoot: true
           containers:
             - name: reconciler
-              image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.16
+              image: ghcr.io/nasa9084/kkids-sync-reconciler:0.1.17
               imagePullPolicy: IfNotPresent
               args:
                 - -state
@@ -47,6 +47,11 @@ spec:
                 - http://kkids-sync-web.kkids-sync.svc:8081
                 - -jitter
                 - 3m
+                # Take an emptied shelf apart slowly (about 100 books a day).
+                - -max-removals-per-run
+                - "5"
+                - -max-removals-per-day
+                - "100"
                 - run
               env:
                 - name: KKIDS_INTERNAL_TOKEN
